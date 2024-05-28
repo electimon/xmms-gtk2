@@ -441,7 +441,7 @@ void mpg123_file_info_box(char *filename)
 
 		cancel = gtk_button_new_with_label(_("Cancel"));
 		gtk_signal_connect_object(GTK_OBJECT(cancel), "clicked",
-					  GTK_SIGNAL_FUNC(gtk_widget_destroy), GTK_OBJECT(window), G_CONNECT_AFTER);
+					  GTK_SIGNAL_FUNC(gtk_widget_destroy), GTK_OBJECT(window));
 		GTK_WIDGET_SET_FLAGS(cancel, GTK_CAN_DEFAULT);
 		gtk_box_pack_start(GTK_BOX(bbox), cancel, TRUE, TRUE, 0);
 
