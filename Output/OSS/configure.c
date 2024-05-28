@@ -201,9 +201,9 @@ void oss_configure(void)
 	adevice = gtk_option_menu_new();
 	gtk_box_pack_start(GTK_BOX(adevice_box), adevice, TRUE, TRUE, 0);
 #if defined(HAVE_NEWPCM)
-	scan_devices("Installed devices:",adevice, configure_win_audio_dev_cb);
+	scan_devices("Installed devices:",adevice, GTK_SIGNAL_FUNC(configure_win_audio_dev_cb));
 #else
-	scan_devices("Audio devices:", adevice, configure_win_audio_dev_cb);
+	scan_devices("Audio devices:", adevice, GTK_SIGNAL_FUNC(configure_win_audio_dev_cb));
 #endif
 	audio_device = oss_cfg.audio_device;
 	gtk_option_menu_set_history(GTK_OPTION_MENU(adevice), oss_cfg.audio_device);
@@ -211,7 +211,7 @@ void oss_configure(void)
 	gtk_box_pack_start_defaults(GTK_BOX(adevice_box), audio_alt_box);
 	adevice_use_alt_check = gtk_check_button_new_with_label(_("Use alternate device:"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(adevice_use_alt_check), oss_cfg.use_alt_audio_device);
-	gtk_signal_connect(GTK_OBJECT(adevice_use_alt_check), "toggled", audio_device_toggled, adevice);
+	gtk_signal_connect(GTK_OBJECT(adevice_use_alt_check), "toggled", GTK_SIGNAL_FUNC(audio_device_toggled), adevice);
 	gtk_box_pack_start(GTK_BOX(audio_alt_box), adevice_use_alt_check, FALSE, FALSE, 0);
 	audio_alt_device_entry = gtk_entry_new();
 	if (oss_cfg.alt_audio_device != NULL)
@@ -235,9 +235,9 @@ void oss_configure(void)
 	mdevice = gtk_option_menu_new();
 	gtk_box_pack_start(GTK_BOX(mdevice_box), mdevice, TRUE, TRUE, 0);
 #if defined(HAVE_NEWPCM)
-	scan_devices("Installed devices:",mdevice, configure_win_mixer_dev_cb);
+	scan_devices("Installed devices:",mdevice, GTK_SIGNAL_FUNC(configure_win_mixer_dev_cb));
 #else
-	scan_devices("Mixers:", mdevice, configure_win_mixer_dev_cb);
+	scan_devices("Mixers:", mdevice, GTK_SIGNAL_FUNC(configure_win_mixer_dev_cb));
 #endif
 	mixer_device = oss_cfg.mixer_device;
 	gtk_option_menu_set_history(GTK_OPTION_MENU(mdevice), oss_cfg.mixer_device);
@@ -245,7 +245,7 @@ void oss_configure(void)
 	gtk_box_pack_start_defaults(GTK_BOX(mdevice_box), mixer_alt_box);
 	mdevice_use_alt_check = gtk_check_button_new_with_label(_("Use alternate device:"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mdevice_use_alt_check), oss_cfg.use_alt_mixer_device);
-	gtk_signal_connect(GTK_OBJECT(mdevice_use_alt_check), "toggled", mixer_device_toggled, mdevice);
+	gtk_signal_connect(GTK_OBJECT(mdevice_use_alt_check), "toggled", GTK_SIGNAL_FUNC(mixer_device_toggled), mdevice);
 	gtk_box_pack_start(GTK_BOX(mixer_alt_box), mdevice_use_alt_check, FALSE, FALSE, 0);
 	mixer_alt_device_entry = gtk_entry_new();
 	if (oss_cfg.alt_mixer_device != NULL)
