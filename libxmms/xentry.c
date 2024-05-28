@@ -49,22 +49,22 @@ static void gtk_move_beginning_of_line    (GtkEntry *entry);
 static void gtk_move_end_of_line          (GtkEntry *entry);
 
 
-static const XmmsGtkTextFunction control_keys[26] = {
-	(XmmsGtkTextFunction)gtk_move_beginning_of_line,    /* a */
-	(XmmsGtkTextFunction)gtk_move_backward_character,   /* b */
-	(XmmsGtkTextFunction)gtk_editable_copy_clipboard,   /* c */
+static const GtkTextFunction control_keys[26] = {
+	(GtkTextFunction)gtk_move_beginning_of_line,    /* a */
+	(GtkTextFunction)gtk_move_backward_character,   /* b */
+	(GtkTextFunction)gtk_editable_copy_clipboard,   /* c */
 	NULL,                                           /* d */
-	(XmmsGtkTextFunction)gtk_move_end_of_line,          /* e */
-	(XmmsGtkTextFunction)gtk_move_forward_character,    /* f */
+	(GtkTextFunction)gtk_move_end_of_line,          /* e */
+	(GtkTextFunction)gtk_move_forward_character,    /* f */
 };
 
-static const XmmsGtkTextFunction alt_keys[26] = {
+static const GtkTextFunction alt_keys[26] = {
 	NULL,                                           /* a */
-	(XmmsGtkTextFunction)gtk_move_backward_word,        /* b */
+	(GtkTextFunction)gtk_move_backward_word,        /* b */
 	NULL,                                           /* c */
 	NULL,                                           /* d */
 	NULL,                                           /* e */
-	(XmmsGtkTextFunction)gtk_move_forward_word,         /* f */
+	(GtkTextFunction)gtk_move_forward_word,         /* f */
 };
 
 
