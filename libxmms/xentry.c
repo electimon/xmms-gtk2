@@ -277,13 +277,13 @@ static void gtk_move_backward_character (GtkEntry *entry)
 static void gtk_move_forward_word (GtkEntry *entry)
 {
 	GtkEditable *editable;
-	gchar *text;
+	GdkWChar *text;
 	int i;
 
 	editable = GTK_EDITABLE (entry);
 
 	/* Prevent any leak of information */
-	if (!gtk_entry_get_visibility(entry))
+	if (!gtk_entry_get_visibility(editable))
 	{
 		gtk_editable_set_position(GTK_EDITABLE(entry), -1);
 		return;
@@ -315,13 +315,13 @@ static void gtk_move_forward_word (GtkEntry *entry)
 static void gtk_move_backward_word(GtkEntry *entry)
 {
 	GtkEditable *editable;
-	gchar *text;
+	GdkWChar *text;
 	int i;
 
 	editable = GTK_EDITABLE (entry);
 
 	/* Prevent any leak of information */
-	if (!gtk_entry_get_visibility(entry))
+	if (!gtk_entry_get_visibility(editable))
 	{
 		gtk_editable_set_position(GTK_EDITABLE(entry), 0);
 		return;
