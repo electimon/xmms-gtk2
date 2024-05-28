@@ -105,7 +105,7 @@ void hint_move_resize(GtkWidget *window, int x, int y, gboolean move)
 static void gnome_wm_set_skip_taskbar(GtkWidget *widget)
 {
 	long data[1];
-	Atom xa_win_hints = gdk_atom_intern("_WIN_HINTS", FALSE);
+	Atom xa_win_hints = gdk_x11_atom_to_xatom(gdk_atom_intern("_WIN_HINTS", FALSE));
 
 	data[0] = WIN_HINTS_SKIP_TASKBAR;
 	XChangeProperty(GDK_DISPLAY(), GDK_WINDOW_XWINDOW(widget->window),
@@ -117,7 +117,7 @@ static void gnome_wm_set_window_always(GtkWidget * window, gboolean always)
 {
 	XEvent xev;
 	long layer = WIN_LAYER_ONTOP;
-	Atom xa_win_layer = gdk_atom_intern("_WIN_LAYER", FALSE);
+	Atom xa_win_layer = gdk_x11_atom_to_xatom(gdk_atom_intern("_WIN_LAYER", FALSE));
 
 	if (always == FALSE)
 		layer = WIN_LAYER_NORMAL;
@@ -150,7 +150,7 @@ static void gnome_wm_set_window_sticky(GtkWidget * window, gboolean sticky)
 {
 	XEvent xev;
 	long state = 0;
-	Atom xa_win_state = gdk_atom_intern("_WIN_STATE", FALSE);
+	Atom xa_win_state = gdk_x11_atom_to_xatom(gdk_atom_intern("_WIN_STATE", FALSE));
 
 	if (sticky)
 		state = WIN_STATE_STICKY;
@@ -190,7 +190,7 @@ static gboolean gnome_wm_found(void)
 
 	gdk_error_trap_push();
 
-	support_check = gdk_atom_intern("_WIN_SUPPORTING_WM_CHECK", FALSE);
+	support_check = gdk_x11_atom_to_xatom(gdk_atom_intern("_WIN_SUPPORTING_WM_CHECK", FALSE));
 	
 	p = XGetWindowProperty(GDK_DISPLAY(), GDK_ROOT_WINDOW(), support_check,
 			       0, 1, False, XA_CARDINAL, &r_type, &r_format,
@@ -228,7 +228,7 @@ static gboolean net_wm_found(void)
 	gboolean ret = FALSE;
 
 	gdk_error_trap_push();
-	support_check = gdk_atom_intern("_NET_SUPPORTING_WM_CHECK", FALSE);
+	support_check = gdk_x11_atom_to_xatom(gdk_atom_intern("_NET_SUPPORTING_WM_CHECK", FALSE));
 
 	p = XGetWindowProperty(GDK_DISPLAY(), GDK_ROOT_WINDOW(), support_check,
 			       0, 1, False, XA_WINDOW, &r_type, &r_format,
@@ -266,8 +266,8 @@ static void net_wm_set_property(GtkWidget * window, char *atom, gboolean state)
 	if (state == FALSE)
 		set = _NET_WM_STATE_REMOVE;
 
-	type = gdk_atom_intern("_NET_WM_STATE", FALSE);
-	property = gdk_atom_intern(atom, FALSE);
+	type = gdk_x11_atom_to_xatom(gdk_atom_intern("_NET_WM_STATE", FALSE));
+	property = gdk_x11_atom_to_xatom(gdk_atom_intern(atom, FALSE));
 
 	xev.type = ClientMessage;
 	xev.xclient.type = ClientMessage;
@@ -293,7 +293,7 @@ static void net_wm_set_desktop(GtkWidget * window, gboolean all)
 		unsigned long count, bytes_remain;
 		unsigned char* prop;
 		Atom r_type;
-		Atom current = gdk_atom_intern("_NET_WM_DESKTOP", FALSE);
+		Atom current = gdk_x11_atom_to_xatom(gdk_atom_intern("_NET_WM_DESKTOP", FALSE));
 
 		p = XGetWindowProperty(GDK_DISPLAY(),
 				       GDK_WINDOW_XWINDOW(window->window), current,
@@ -313,7 +313,7 @@ static void net_wm_set_desktop(GtkWidget * window, gboolean all)
 			 */
 			return;
 
-		current = gdk_atom_intern("_NET_CURRENT_DESKTOP", FALSE);
+		current = gdk_x11_atom_to_xatom(gdk_atom_intern("_NET_CURRENT_DESKTOP", FALSE));
 
 		p = XGetWindowProperty(GDK_DISPLAY(), GDK_ROOT_WINDOW(), current,
 				       0, 1, False, XA_CARDINAL, &r_type, &r_format,
@@ -332,7 +332,7 @@ static void net_wm_set_desktop(GtkWidget * window, gboolean all)
 	xev.type = ClientMessage;
 	xev.xclient.type = ClientMessage;
 	xev.xclient.window = GDK_WINDOW_XWINDOW(window->window);
-	xev.xclient.message_type = gdk_atom_intern("_NET_WM_DESKTOP", FALSE);
+	xev.xclient.message_type = gdk_x11_atom_to_xatom(gdk_atom_intern("_NET_WM_DESKTOP", FALSE));
 	xev.xclient.format = 32;
 	xev.xclient.data.l[0] = current_desktop;
 	
@@ -368,7 +368,7 @@ static void net_wm_move_resize(GtkWidget *window, int x, int y, gboolean move)
 
 	gdk_pointer_ungrab(GDK_CURRENT_TIME);
 
-	type = gdk_atom_intern("_NET_WM_MOVERESIZE", FALSE);
+	type = gdk_x11_atom_to_xatom(gdk_atom_intern("_NET_WM_MOVERESIZE", FALSE));
 
 	xev.type = ClientMessage;
 	xev.xclient.type = ClientMessage;
@@ -387,7 +387,7 @@ static void net_wm_move_resize(GtkWidget *window, int x, int y, gboolean move)
 			       
 static gboolean find_atom(Atom *atoms, int n, const char *name)
 {
-	Atom a = gdk_atom_intern(name, FALSE);
+	Atom a = gdk_x11_atom_to_xatom(gdk_atom_intern(name, FALSE));
 	int i;
 
 	for (i = 0; i < n; i++)
@@ -398,7 +398,7 @@ static gboolean find_atom(Atom *atoms, int n, const char *name)
 
 static gboolean get_supported_atoms(Atom **atoms, unsigned long *natoms, const char *name)
 {
-	Atom supported = gdk_atom_intern(name, FALSE), r_type;
+	Atom supported = gdk_x11_atom_to_xatom(gdk_atom_intern(name, FALSE)), r_type;
 	unsigned long bremain;
 	int r_format, p;
 

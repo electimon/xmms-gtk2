@@ -388,7 +388,7 @@ static void input_general_file_info_box(char *filename, InputPlugin *ip)
 
 	char *title, *iplugin;
 		
-	window = gtk_window_new(GDK_WINDOW_DIALOG);
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, FALSE);
 	title = g_strdup_printf(_("File Info - %s"), g_basename(filename));
 	gtk_window_set_title(GTK_WINDOW(window), title);
@@ -435,7 +435,7 @@ static void input_general_file_info_box(char *filename, InputPlugin *ip)
 	GTK_WIDGET_SET_FLAGS(cancel, GTK_CAN_DEFAULT);
 	gtk_box_pack_start(GTK_BOX(bbox), cancel, TRUE, TRUE, 0);
 	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-			   util_dialog_keypress_cb, NULL);
+			   GTK_SIGNAL_FUNC(util_dialog_keypress_cb), NULL);
 
 	gtk_widget_show_all(window);
 }

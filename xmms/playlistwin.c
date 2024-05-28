@@ -1285,7 +1285,7 @@ static void playlistwin_press(GtkWidget * widget, GdkEventButton * event, gpoint
 	if (grab)
 		gdk_pointer_grab(playlistwin->window, FALSE,
 				 GDK_BUTTON_MOTION_MASK | GDK_BUTTON_RELEASE_MASK,
-				 GDK_NONE, GDK_NONE, GDK_CURRENT_TIME);
+				 NULL, NULL, GDK_CURRENT_TIME);
 
 }
 
@@ -1480,7 +1480,7 @@ static void playlistwin_physically_delete(void)
 
 	ok = gtk_button_new_with_label(_("OK"));
 	cancel = gtk_button_new_with_label(_("Cancel"));
-	gtk_signal_connect(GTK_OBJECT(ok), "clicked", playlistwin_physically_delete_cb, selected_list);
+	gtk_signal_connect(GTK_OBJECT(ok), "clicked", GTK_SIGNAL_FUNC(playlistwin_physically_delete_cb), selected_list);
 	gtk_signal_connect_object(GTK_OBJECT(ok), "clicked", GTK_SIGNAL_FUNC(gtk_widget_destroy), GTK_OBJECT(dialog));
 	gtk_signal_connect_object(GTK_OBJECT(cancel), "clicked", GTK_SIGNAL_FUNC(gtk_widget_destroy), GTK_OBJECT(dialog));
 	gtk_box_pack_start(GTK_BOX(bbox), ok, FALSE, FALSE, 0);
@@ -1619,7 +1619,7 @@ static gboolean playlistwin_keypress(GtkWidget * w, GdkEventKey * event, gpointe
 			break;
 		default:
 			/* TODO give a non-null quark? */
-			if (!gtk_accel_group_activate(playlistwin_accel, NULL, playlistwin, event->keyval, event->state))
+			if (!gtk_accel_group_activate(playlistwin_accel, 0, G_OBJECT(playlistwin), event->keyval, event->state))
 				gtk_widget_event(mainwin, (GdkEvent *) event);
 			refresh = FALSE;
 			break;
@@ -1921,7 +1921,7 @@ static void selection_received(GtkWidget *widget, GtkSelectionData *selection_da
 
 static void playlistwin_create_gtk(void)
 {
-	playlistwin = gtk_window_new(GDK_WINDOW_DIALOG);
+	playlistwin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	dock_add_window(dock_window_list, playlistwin);
 	gtk_widget_set_app_paintable(playlistwin, TRUE);
 	if (cfg.show_wm_decorations)

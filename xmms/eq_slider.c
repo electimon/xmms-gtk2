@@ -164,9 +164,9 @@ EqSlider *create_eqslider(GList ** wlist, GdkPixmap * parent, GdkGC * gc, gint x
 	es->es_widget.width = 14;
 	es->es_widget.height = 63;
 	es->es_widget.visible = TRUE;
-	es->es_widget.button_press_cb = GTK_SIGNAL_FUNC(eqslider_button_press_cb);
-	es->es_widget.button_release_cb = GTK_SIGNAL_FUNC(eqslider_button_release_cb);
-	es->es_widget.motion_cb = GTK_SIGNAL_FUNC(eqslider_motion_cb);
+	es->es_widget.button_press_cb = (void (*)(GtkWidget *, GdkEventButton *, void *))eqslider_button_press_cb;
+	es->es_widget.button_release_cb = (void (*)(GtkWidget *, GdkEventButton *, void *))eqslider_button_release_cb;
+	es->es_widget.motion_cb = (void (*)(GtkWidget *, GdkEventMotion *, void *))eqslider_motion_cb;
 	es->es_widget.draw = eqslider_draw;
 	add_widget(wlist, es);
 	return es;

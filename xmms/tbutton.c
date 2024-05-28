@@ -125,9 +125,9 @@ TButton *create_tbutton(GList ** wlist, GdkPixmap * parent, GdkGC * gc, gint x, 
 	b->tb_widget.width = w;
 	b->tb_widget.height = h;
 	b->tb_widget.visible = 1;
-	b->tb_widget.button_press_cb = GTK_SIGNAL_FUNC(tbutton_button_press_cb);
-	b->tb_widget.button_release_cb = GTK_SIGNAL_FUNC(tbutton_button_release_cb);
-	b->tb_widget.motion_cb = GTK_SIGNAL_FUNC(tbutton_motion_cb);
+	b->tb_widget.button_press_cb = (void (*)(GtkWidget *, GdkEventButton *, void *))tbutton_button_press_cb;
+	b->tb_widget.button_release_cb = (void (*)(GtkWidget *, GdkEventButton *, void *))tbutton_button_release_cb;
+	b->tb_widget.motion_cb = (void (*)(GtkWidget *, GdkEventMotion *, void *))tbutton_motion_cb;
 	b->tb_widget.draw = tbutton_draw;
 	b->tb_nux = nux;
 	b->tb_nuy = nuy;

@@ -132,9 +132,9 @@ PlaylistSlider *create_playlistslider(GList ** wlist, GdkPixmap * parent, GdkGC 
 	ps->ps_widget.width = 8;
 	ps->ps_widget.height = h;
 	ps->ps_widget.visible = 1;
-	ps->ps_widget.button_press_cb = GTK_SIGNAL_FUNC(playlistslider_button_press_cb);
-	ps->ps_widget.button_release_cb = GTK_SIGNAL_FUNC(playlistslider_button_release_cb);
-	ps->ps_widget.motion_cb = GTK_SIGNAL_FUNC(playlistslider_motion_cb);
+	ps->ps_widget.button_press_cb = (void (*)(GtkWidget *, GdkEventButton *, void *))playlistslider_button_press_cb;
+	ps->ps_widget.button_release_cb = (void (*)(GtkWidget *, GdkEventButton *, void *))playlistslider_button_release_cb;
+	ps->ps_widget.motion_cb = (void (*)(GtkWidget *, GdkEventMotion *, void *))playlistslider_motion_cb;
 	ps->ps_widget.draw = playlistslider_draw;
 	ps->ps_list = list;
 	add_widget(wlist, ps);

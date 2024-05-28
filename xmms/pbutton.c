@@ -128,9 +128,9 @@ PButton *create_pbutton_ex(GList ** wlist, GdkPixmap * parent, GdkGC * gc, gint 
 	b->pb_widget.width = w;
 	b->pb_widget.height = h;
 	b->pb_widget.visible = 1;
-	b->pb_widget.button_press_cb = GTK_SIGNAL_FUNC(pbutton_button_press_cb);
-	b->pb_widget.button_release_cb = GTK_SIGNAL_FUNC(pbutton_button_release_cb);
-	b->pb_widget.motion_cb = GTK_SIGNAL_FUNC(pbutton_motion_cb);
+	b->pb_widget.button_press_cb = (void (*)(GtkWidget *, GdkEventButton *, void *))pbutton_button_press_cb;
+	b->pb_widget.button_release_cb = (void (*)(GtkWidget *, GdkEventButton *, void *))pbutton_button_release_cb;
+	b->pb_widget.motion_cb = (void (*)(GtkWidget *, GdkEventMotion *, void *))pbutton_motion_cb;
 	b->pb_widget.draw = pbutton_draw;
 	b->pb_nx = nx;
 	b->pb_ny = ny;

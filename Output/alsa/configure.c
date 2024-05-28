@@ -89,7 +89,7 @@ static int get_cards(GtkOptionMenu *omenu, GtkSignalFunc cb, int active)
 		}
 
 		item = gtk_menu_item_new_with_label(label);
-		gtk_signal_connect(GTK_OBJECT(item), "activate", cb,
+		gtk_signal_connect(GTK_OBJECT(item), "activate", GTK_SIGNAL_FUNC(cb),
 				   GINT_TO_POINTER(card));
 		gtk_widget_show(item);
 		gtk_menu_append(GTK_MENU(menu), item);
@@ -326,7 +326,7 @@ void alsa_configure(void)
 
 	mixer_card_om = gtk_option_menu_new();
 	mset = get_cards(GTK_OPTION_MENU(mixer_card_om),
-			 mixer_card_cb, alsa_cfg.mixer_card);
+			 GTK_SIGNAL_FUNC(mixer_card_cb), alsa_cfg.mixer_card);
 
 	gtk_table_attach(GTK_TABLE(mixer_table), mixer_card_om,
 			 1, 2, 0, 1, GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 0);
@@ -346,7 +346,7 @@ void alsa_configure(void)
 			 1, 2, 1, 2, GTK_FILL | GTK_EXPAND, 0, 0, 0);
 
 	gtk_signal_connect(GTK_OBJECT(softvolume_toggle_button), "toggled",
-			   softvolume_toggle_cb, mixer_card_om);
+			   GTK_SIGNAL_FUNC(softvolume_toggle_cb), mixer_card_om);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(softvolume_toggle_button),
 				     alsa_cfg.soft_volume);
 
@@ -435,14 +435,14 @@ void alsa_configure(void)
 	gtk_box_pack_start(GTK_BOX(vbox), bbox, FALSE, FALSE, 0);
 
 	ok = gtk_button_new_with_label(_("OK"));
-	gtk_signal_connect(GTK_OBJECT(ok), "clicked", configure_win_ok_cb, NULL);
+	gtk_signal_connect(GTK_OBJECT(ok), "clicked", GTK_SIGNAL_FUNC(configure_win_ok_cb), NULL);
 	GTK_WIDGET_SET_FLAGS(ok, GTK_CAN_DEFAULT);
 	gtk_box_pack_start(GTK_BOX(bbox), ok, TRUE, TRUE, 0);
 	gtk_widget_grab_default(ok);
 
 	cancel = gtk_button_new_with_label(_("Cancel"));
 	gtk_signal_connect_object(GTK_OBJECT(cancel), "clicked",
-				  gtk_widget_destroy, GTK_OBJECT(configure_win));
+				  GTK_SIGNAL_FUNC(gtk_widget_destroy), GTK_OBJECT(configure_win));
 	GTK_WIDGET_SET_FLAGS(cancel, GTK_CAN_DEFAULT);
 	gtk_box_pack_start(GTK_BOX(bbox), cancel, TRUE, TRUE, 0);
 

@@ -54,7 +54,7 @@ static void tone_about(void)
 		  "e.g. tone://2000;2005 to play a 2000Hz tone and a 2005Hz tone"),
 		_("OK"), FALSE, NULL, NULL);
 	gtk_signal_connect(GTK_OBJECT(box), "destroy",
-			   gtk_widget_destroyed, &box);
+			   GTK_SIGNAL_FUNC(gtk_widget_destroyed), &box);
 }
 
 static int tone_is_our_file(char *filename)

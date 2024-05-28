@@ -370,7 +370,7 @@ void vorbis_configure(void)
 
 	title_tag_override = gtk_check_button_new_with_label(_("Override generic titles"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(title_tag_override), vorbis_cfg.tag_override);
-	gtk_signal_connect(GTK_OBJECT(title_tag_override), "clicked", title_tag_override_cb, NULL);
+	gtk_signal_connect(GTK_OBJECT(title_tag_override), "clicked", GTK_SIGNAL_FUNC(title_tag_override_cb), NULL);
 	gtk_box_pack_start(GTK_BOX(title_tag_vbox), title_tag_override, FALSE, FALSE, 0);
 
         title_tag_box = gtk_hbox_new(FALSE, 5);
@@ -410,7 +410,7 @@ void vorbis_configure(void)
 	rg_type_frame = gtk_frame_new(_("ReplayGain Type:"));
 	gtk_box_pack_start(GTK_BOX(rg_vbox), rg_type_frame, FALSE, FALSE, 0);
 
-	gtk_signal_connect(GTK_OBJECT(rg_switch), "toggled", rg_switch_cb, rg_type_frame);
+	gtk_signal_connect(GTK_OBJECT(rg_switch), "toggled", GTK_SIGNAL_FUNC(rg_switch_cb), rg_type_frame);
 	
 	rg_type_vbox = gtk_vbox_new(FALSE, 5);
 	gtk_container_set_border_width(GTK_CONTAINER(rg_type_vbox), 5);

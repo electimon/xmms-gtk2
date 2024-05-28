@@ -763,7 +763,7 @@ void cdda_cddb_show_server_dialog(GtkWidget *w, gpointer data)
 
 	server_clist = gtk_clist_new_with_titles(4, titles);
 	gtk_signal_connect(GTK_OBJECT(server_clist), "select-row",
-			   cddb_server_dialog_select, data);
+			   GTK_SIGNAL_FUNC(cddb_server_dialog_select), data);
 	gtk_box_pack_start(GTK_BOX(vbox), server_clist, TRUE, TRUE, 0);
 
 	bbox = gtk_hbutton_box_new();

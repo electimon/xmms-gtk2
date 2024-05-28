@@ -292,9 +292,9 @@ void mpg123_file_info_box(char *filename)
 		window = gtk_window_new(GDK_WINDOW_DIALOG);
 		gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
 		gtk_signal_connect(GTK_OBJECT(window), "destroy",
-				   gtk_widget_destroyed, &window);
+				   GTK_SIGNAL_FUNC(gtk_widget_destroyed), &window);
 		gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-				   file_info_box_keypress_cb, NULL);
+				   GTK_SIGNAL_FUNC(file_info_box_keypress_cb), NULL);
 		gtk_container_set_border_width(GTK_CONTAINER(window), 10);
 
 		vbox = gtk_vbox_new(FALSE, 10);
@@ -415,7 +415,7 @@ void mpg123_file_info_box(char *filename)
 		}
 		genre_set_popdown(genre_combo, genre_list);
 		gtk_signal_connect(GTK_OBJECT(GTK_COMBO(genre_combo)->list),
-				   "select-child", genre_selected, NULL);
+				   "select-child", GTK_SIGNAL_FUNC(genre_selected), NULL);
 
 		gtk_table_attach(GTK_TABLE(table), genre_combo, 1, 4, 5, 6,
 				 GTK_FILL | GTK_EXPAND | GTK_SHRINK,
@@ -428,20 +428,20 @@ void mpg123_file_info_box(char *filename)
 		gtk_box_pack_start(GTK_BOX(left_vbox), bbox, FALSE, FALSE, 0);
 
 		save = gtk_button_new_with_label(_("Save"));
-		gtk_signal_connect(GTK_OBJECT(save), "clicked", save_cb, NULL);
+		gtk_signal_connect(GTK_OBJECT(save), "clicked", GTK_SIGNAL_FUNC(save_cb), NULL);
 		GTK_WIDGET_SET_FLAGS(save, GTK_CAN_DEFAULT);
 		gtk_box_pack_start(GTK_BOX(bbox), save, TRUE, TRUE, 0);
 		gtk_widget_grab_default(save);
 
 		remove_id3 = gtk_button_new_with_label(_("Remove ID3"));
 		gtk_signal_connect(GTK_OBJECT(remove_id3), "clicked",
-				   remove_id3_cb, NULL);
+				   GTK_SIGNAL_FUNC(remove_id3_cb), NULL);
 		GTK_WIDGET_SET_FLAGS(remove_id3, GTK_CAN_DEFAULT);
 		gtk_box_pack_start(GTK_BOX(bbox), remove_id3, TRUE, TRUE, 0);
 
 		cancel = gtk_button_new_with_label(_("Cancel"));
 		gtk_signal_connect_object(GTK_OBJECT(cancel), "clicked",
-					  gtk_widget_destroy, GTK_OBJECT(window));
+					  GTK_SIGNAL_FUNC(gtk_widget_destroy), GTK_OBJECT(window), G_CONNECT_AFTER);
 		GTK_WIDGET_SET_FLAGS(cancel, GTK_CAN_DEFAULT);
 		gtk_box_pack_start(GTK_BOX(bbox), cancel, TRUE, TRUE, 0);
 

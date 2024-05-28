@@ -182,7 +182,7 @@ void joy_configure(void)
 		/* -------------------------------------------------- */
 		frame = gtk_frame_new(_("Directionals:"));
 		gtk_box_pack_start(GTK_BOX(box), frame, FALSE, FALSE, 0);
-		dir_pack = gtk_packer_new();
+		dir_pack = gtk_hbox_new(FALSE, 10);
 		gtk_container_set_border_width(GTK_CONTAINER(dir_pack), 5);
 		gtk_container_add(GTK_CONTAINER(frame), dir_pack);
 		hist_val[0] = joy_cfg.up;
@@ -194,7 +194,7 @@ void joy_configure(void)
 		{
 			blist = gtk_option_menu_new();
 			gtk_widget_set_usize(blist, 120, -1);
-			gtk_packer_add(GTK_PACKER(dir_pack), blist, pack_pos[i], GTK_ANCHOR_CENTER, 0, 0, 5, 5, 0, 0);
+			gtk_box_pack_start(GTK_BOX(dir_pack), blist, TRUE, TRUE, 0);
 			gtk_option_menu_remove_menu(GTK_OPTION_MENU(blist));
 			gtk_option_menu_set_menu(GTK_OPTION_MENU(blist), joy_menus[i]);
 			gtk_option_menu_set_history(GTK_OPTION_MENU(blist), hist_val[i]);
@@ -207,7 +207,7 @@ void joy_configure(void)
 		/* -------------------------------------------------- */
 		frame = gtk_frame_new(_("Directionals (alternate):"));
 		gtk_box_pack_start(GTK_BOX(box), frame, FALSE, FALSE, 0);
-		dir_pack = gtk_packer_new();
+		dir_pack = gtk_hbox_new(FALSE, 10);
 		gtk_container_set_border_width(GTK_CONTAINER(dir_pack), 5);
 		gtk_container_add(GTK_CONTAINER(frame), dir_pack);
 		hist_val[0] = joy_cfg.alt_up;
@@ -219,7 +219,7 @@ void joy_configure(void)
 		{
 			blist = gtk_option_menu_new();
 			gtk_widget_set_usize(blist, 120, -1);
-			gtk_packer_add(GTK_PACKER(dir_pack), blist, pack_pos[i], GTK_ANCHOR_CENTER, 0, 0, 5, 5, 0, 0);
+			gtk_box_pack_start(GTK_BOX(dir_pack), blist, TRUE, TRUE, 0);
 			gtk_option_menu_remove_menu(GTK_OPTION_MENU(blist));
 			gtk_option_menu_set_menu(GTK_OPTION_MENU(blist), joy_menus[4 + i]);
 			gtk_option_menu_set_history(GTK_OPTION_MENU(blist), hist_val[i]);

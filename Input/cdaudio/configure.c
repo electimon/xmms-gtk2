@@ -435,7 +435,7 @@ static GtkWidget* configurewin_add_drive(struct driveinfo *drive, void *nb)
 	gtk_box_pack_start(GTK_BOX(volume_box), d->mixer_oss, FALSE, FALSE, 0);
 
 	gtk_signal_connect(GTK_OBJECT(readmode_analog), "toggled",
-			   toggle_set_sensitive_cb, volume_frame);
+			   GTK_SIGNAL_FUNC(toggle_set_sensitive_cb), volume_frame);
 #ifndef HAVE_OSS
 	gtk_widget_set_sensitive(d->mixer_oss, FALSE);
 #endif
@@ -649,7 +649,7 @@ void cdda_configure(void)
 	gtk_container_add(GTK_CONTAINER(cdi_name_vbox), cdi_name_enable_vbox);
 	gtk_widget_set_sensitive(cdi_name_enable_vbox, cdda_cfg.title_override);
 	gtk_signal_connect(GTK_OBJECT(cdi_name_override), "toggled",
-			   toggle_set_sensitive_cb, cdi_name_enable_vbox);
+			   GTK_SIGNAL_FUNC(toggle_set_sensitive_cb), cdi_name_enable_vbox);
 
 	cdi_name_hbox = gtk_hbox_new(FALSE, 5);
 	gtk_box_pack_start(GTK_BOX(cdi_name_enable_vbox), cdi_name_hbox, FALSE, FALSE, 0);

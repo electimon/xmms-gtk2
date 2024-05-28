@@ -146,9 +146,9 @@ HSlider *create_hslider(GList ** wlist, GdkPixmap * parent, GdkGC * gc, gint x,
 	hs->hs_widget.width = w;
 	hs->hs_widget.height = h;
 	hs->hs_widget.visible = 1;
-	hs->hs_widget.button_press_cb = GTK_SIGNAL_FUNC(hslider_button_press_cb);
-	hs->hs_widget.button_release_cb = GTK_SIGNAL_FUNC(hslider_button_release_cb);
-	hs->hs_widget.motion_cb = GTK_SIGNAL_FUNC(hslider_motion_cb);
+	hs->hs_widget.button_press_cb = (void (*)(GtkWidget *, GdkEventButton *, void *))hslider_button_press_cb;
+	hs->hs_widget.button_release_cb = (void (*)(GtkWidget *, GdkEventButton *, void *))hslider_button_release_cb;
+	hs->hs_widget.motion_cb = (void (*)(GtkWidget *, GdkEventMotion *, void *))hslider_motion_cb;
 	hs->hs_widget.draw = hslider_draw;
 	hs->hs_knob_nx = knx;
 	hs->hs_knob_ny = kny;

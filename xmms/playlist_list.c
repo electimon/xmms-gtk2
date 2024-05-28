@@ -513,9 +513,9 @@ PlayList_List *create_playlist_list(GList ** wlist, GdkPixmap * parent, GdkGC * 
 	pl->pl_widget.width = w;
 	pl->pl_widget.height = h;
 	pl->pl_widget.visible = TRUE;
-	pl->pl_widget.button_press_cb = GTK_SIGNAL_FUNC(playlist_list_button_press_cb);
-	pl->pl_widget.button_release_cb = GTK_SIGNAL_FUNC(playlist_list_button_release_cb);
-	pl->pl_widget.motion_cb = GTK_SIGNAL_FUNC(playlist_list_motion_cb);
+	pl->pl_widget.button_press_cb = (void (*)(GtkWidget *, GdkEventButton *, void *))playlist_list_button_press_cb;
+	pl->pl_widget.button_release_cb = (void (*)(GtkWidget *, GdkEventButton *, void *))playlist_list_button_release_cb;
+	pl->pl_widget.motion_cb = (void (*)(GtkWidget *, GdkEventMotion *, void *))playlist_list_motion_cb;
 	pl->pl_widget.draw = playlist_list_draw;
 	pl->pl_prev_selected = -1;
 	pl->pl_prev_min = -1;

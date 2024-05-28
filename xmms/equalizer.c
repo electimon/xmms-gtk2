@@ -368,7 +368,7 @@ void equalizerwin_press(GtkWidget * widget, GdkEventButton * event, gpointer cal
 	if (grab)
 		gdk_pointer_grab(equalizerwin->window, FALSE,
 				 GDK_BUTTON_MOTION_MASK | GDK_BUTTON_RELEASE_MASK,
-				 GDK_NONE, GDK_NONE, GDK_CURRENT_TIME);
+				 NULL, NULL, GDK_CURRENT_TIME);
 }
 
 void equalizerwin_motion(GtkWidget * widget, GdkEventMotion * event, gpointer callback_data)
@@ -524,8 +524,8 @@ gboolean equalizerwin_keypress(GtkWidget * w, GdkEventKey * event, gpointer data
 		default:
 			if (!gtk_accel_group_activate(equalizerwin_accel,
 						      /* TODO give a non-null quark? */
-						      NULL,
-						      equalizerwin,
+						      0,
+						      G_OBJECT(equalizerwin),
 						      event->keyval,
 						      event->state))
 				gtk_widget_event(mainwin, (GdkEvent*) event);
@@ -743,7 +743,7 @@ static void equalizerwin_create_widgets(void)
 
 static void equalizerwin_create_gtk(void)
 {
-	equalizerwin = gtk_window_new(GDK_WINDOW_DIALOG);
+	equalizerwin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	dock_add_window(dock_window_list, equalizerwin);
 	gtk_widget_set_app_paintable(equalizerwin, TRUE);
 	gtk_window_set_policy(GTK_WINDOW(equalizerwin), FALSE, FALSE, TRUE);
@@ -1287,7 +1287,7 @@ static GtkWidget *equalizerwin_create_list_window(GList * preset_list,
 	char *preset_text[1];
 	GList *node;
 
-	*window = gtk_window_new(GDK_WINDOW_DIALOG);
+	*window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_signal_connect(GTK_OBJECT(*window), "destroy",
 			   GTK_SIGNAL_FUNC(gtk_widget_destroyed), window);
 	gtk_window_set_transient_for(GTK_WINDOW(*window), GTK_WINDOW(equalizerwin));
@@ -1371,13 +1371,13 @@ void equalizerwin_presets_menu_cb(gpointer cb_data, guint action, GtkWidget * w)
 	{
 		case EQUALIZER_PRESETS_LOAD_PRESET:
 			if (!equalizerwin_load_window)
-				equalizerwin_create_list_window(equalizer_presets, _("Load preset"), &equalizerwin_load_window, GTK_SELECTION_SINGLE, NULL, _("OK"), _("Cancel"), equalizerwin_load_ok, equalizerwin_load_select);
+				equalizerwin_create_list_window(equalizer_presets, _("Load preset"), &equalizerwin_load_window, GTK_SELECTION_SINGLE, NULL, _("OK"), _("Cancel"), GTK_SIGNAL_FUNC(equalizerwin_load_ok), GTK_SIGNAL_FUNC(equalizerwin_load_select));
 			else
 				gdk_window_raise(equalizerwin_load_window->window);
 			break;
 		case EQUALIZER_PRESETS_LOAD_AUTOPRESET:
 			if (!equalizerwin_load_auto_window)
-				equalizerwin_create_list_window(equalizer_auto_presets, _("Load auto-preset"), &equalizerwin_load_auto_window, GTK_SELECTION_SINGLE, NULL, _("OK"), _("Cancel"), equalizerwin_load_auto_ok, equalizerwin_load_auto_select);
+				equalizerwin_create_list_window(equalizer_auto_presets, _("Load auto-preset"), &equalizerwin_load_auto_window, GTK_SELECTION_SINGLE, NULL, _("OK"), _("Cancel"), GTK_SIGNAL_FUNC(equalizerwin_load_auto_ok), GTK_SIGNAL_FUNC(equalizerwin_load_auto_select));
 			else
 				gdk_window_raise(equalizerwin_load_auto_window->window);
 			break;
@@ -1441,7 +1441,7 @@ void equalizerwin_presets_menu_cb(gpointer cb_data, guint action, GtkWidget * w)
 
 		case EQUALIZER_PRESETS_SAVE_PRESET:
 			if (!equalizerwin_save_window)
-				equalizerwin_create_list_window(equalizer_presets, _("Save preset"), &equalizerwin_save_window, GTK_SELECTION_SINGLE, &equalizerwin_save_entry, _("OK"), _("Cancel"), equalizerwin_save_ok, equalizerwin_save_select);
+				equalizerwin_create_list_window(equalizer_presets, _("Save preset"), &equalizerwin_save_window, GTK_SELECTION_SINGLE, &equalizerwin_save_entry, _("OK"), _("Cancel"), GTK_SIGNAL_FUNC(equalizerwin_save_ok), GTK_SIGNAL_FUNC(equalizerwin_save_select));
 			else
 				gdk_window_raise(equalizerwin_save_window->window);
 			break;
@@ -1450,7 +1450,7 @@ void equalizerwin_presets_menu_cb(gpointer cb_data, guint action, GtkWidget * w)
 			gchar *name;
 
 			if (!equalizerwin_save_auto_window)
-				equalizerwin_create_list_window(equalizer_auto_presets, _("Save auto-preset"), &equalizerwin_save_auto_window, GTK_SELECTION_SINGLE, &equalizerwin_save_auto_entry, _("OK"), _("Cancel"), equalizerwin_save_auto_ok, equalizerwin_save_auto_select);
+				equalizerwin_create_list_window(equalizer_auto_presets, _("Save auto-preset"), &equalizerwin_save_auto_window, GTK_SELECTION_SINGLE, &equalizerwin_save_auto_entry, _("OK"), _("Cancel"), GTK_SIGNAL_FUNC(equalizerwin_save_auto_ok), GTK_SIGNAL_FUNC(equalizerwin_save_auto_select));
 			else
 				gdk_window_raise(equalizerwin_save_auto_window->window);
 			if ((name = playlist_get_filename(get_playlist_position())) != NULL)
@@ -1504,11 +1504,11 @@ void equalizerwin_presets_menu_cb(gpointer cb_data, guint action, GtkWidget * w)
 		}
 		case EQUALIZER_PRESETS_DELETE_PRESET:
 			if (!equalizerwin_delete_window)
-				equalizerwin_create_list_window(equalizer_presets, _("Delete preset"), &equalizerwin_delete_window, GTK_SELECTION_EXTENDED, NULL, _("Delete"), _("Close"), equalizerwin_delete_delete, NULL);
+				equalizerwin_create_list_window(equalizer_presets, _("Delete preset"), &equalizerwin_delete_window, GTK_SELECTION_EXTENDED, NULL, _("Delete"), _("Close"), GTK_SIGNAL_FUNC(equalizerwin_delete_delete), NULL);
 			break;
 		case EQUALIZER_PRESETS_DELETE_AUTOPRESET:
 			if (!equalizerwin_delete_auto_window)
-				equalizerwin_create_list_window(equalizer_auto_presets, _("Delete auto-preset"), &equalizerwin_delete_auto_window, GTK_SELECTION_EXTENDED, NULL, _("Delete"), _("Close"), equalizerwin_delete_auto_delete, NULL);
+				equalizerwin_create_list_window(equalizer_auto_presets, _("Delete auto-preset"), &equalizerwin_delete_auto_window, GTK_SELECTION_EXTENDED, NULL, _("Delete"), _("Close"), GTK_SIGNAL_FUNC(equalizerwin_delete_auto_delete), NULL);
 			break;
 	        case EQUALIZER_PRESETS_CONFIGURE:
 			if (!equalizerwin_configure_window)
@@ -1640,7 +1640,7 @@ GtkWidget * equalizerwin_create_conf_window(void)
 	GtkWidget *vbox, *hbox, *instructions;
 	GtkWidget *ok, *cancel, *apply;
 
-	window = gtk_window_new(GDK_WINDOW_DIALOG);
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), _("Configure Equalizer"));
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
 	gtk_window_set_transient_for(GTK_WINDOW(window), GTK_WINDOW(mainwin));

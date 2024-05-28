@@ -559,7 +559,7 @@ void mpg123_configure(void)
 
 	title_override = gtk_check_button_new_with_label(_("Override generic titles"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(title_override), mpg123_cfg.title_override);
-	gtk_signal_connect(GTK_OBJECT(title_override), "clicked", title_override_cb, NULL);
+	gtk_signal_connect(GTK_OBJECT(title_override), "clicked", GTK_SIGNAL_FUNC(title_override_cb), NULL);
 	gtk_box_pack_start(GTK_BOX(title_id3_vbox), title_override, FALSE, FALSE, 0);
 
 	title_id3_box = gtk_hbox_new(FALSE, 5);

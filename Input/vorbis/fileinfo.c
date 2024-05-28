@@ -466,7 +466,7 @@ void vorbis_file_info_box(char *fn)
 		gtk_signal_connect(GTK_OBJECT(window), "destroy", 
 			GTK_SIGNAL_FUNC(gtk_widget_destroyed), &window);
 		gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-				   keypress_cb, NULL);
+				   GTK_SIGNAL_FUNC(keypress_cb), NULL);
 		gtk_container_set_border_width(GTK_CONTAINER(window), 10);
 
 		vbox = gtk_vbox_new(FALSE, 10);
