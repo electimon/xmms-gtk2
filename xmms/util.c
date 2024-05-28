@@ -30,7 +30,7 @@ static GQuark quark_popup_data;
 
 
 /*
- * find_file_recursively() by Jörg Schuler Wed, 17 Feb 1999 23:50:52
+ * find_file_recursively() by Jï¿½rg Schuler Wed, 17 Feb 1999 23:50:52
  * +0100 Placed under GPL version 2 or (at your option) any later
  * version
  */
@@ -565,9 +565,9 @@ GtkWidget* util_create_add_url_window(gchar *caption, GtkSignalFunc ok_func, Gtk
 	gtk_signal_connect(GTK_OBJECT(ok), "clicked", GTK_SIGNAL_FUNC(util_add_url_callback), GTK_COMBO(combo)->entry);
 	gtk_signal_connect(GTK_OBJECT(ok), "clicked", GTK_SIGNAL_FUNC(ok_func), GTK_COMBO(combo)->entry);
 
-	GTK_WIDGET_SET_FLAGS(ok, GTK_CAN_DEFAULT);
-	gtk_widget_grab_default(ok);
+	gtk_widget_set_can_default(ok, TRUE);
 	gtk_box_pack_start(GTK_BOX(bbox), ok, FALSE, FALSE, 0);
+	gtk_widget_grab_default(ok);
 	gtk_widget_show(ok);
 
 	if (enqueue_func)
