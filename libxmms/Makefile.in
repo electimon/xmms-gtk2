@@ -66,7 +66,7 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 libxmms_la_DEPENDENCIES =
 am_libxmms_la_OBJECTS = configfile.lo xmmsctrl.lo dirbrowser.lo \
 	util.lo formatter.lo titlestring.lo xentry.lo xconvert.lo \
-	charset.lo
+	charset.lo gtkcompat.lo
 libxmms_la_OBJECTS = $(am_libxmms_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I.
 depcomp = $(SHELL) $(top_srcdir)/../depcomp
@@ -220,7 +220,8 @@ formatter.c formatter.h \
 titlestring.c titlestring.h \
 xentry.c xentry.h \
 xconvert.c xconvert.h \
-charset.c charset.h
+charset.c charset.h \
+gtkcompat.c gtkcompat.h
 
 xmmsinclude_HEADERS = configfile.h xmmsctrl.h dirbrowser.h util.h formatter.h titlestring.h
 all: config.h
@@ -323,6 +324,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xconvert.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xentry.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xmmsctrl.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtkcompat.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \

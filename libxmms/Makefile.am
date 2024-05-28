@@ -16,7 +16,8 @@ formatter.c formatter.h \
 titlestring.c titlestring.h \
 xentry.c xentry.h \
 xconvert.c xconvert.h \
-charset.c charset.h
+charset.c charset.h \
+gtkcompat.c gtkcompat.h
 
 xmmsinclude_HEADERS = configfile.h xmmsctrl.h dirbrowser.h util.h formatter.h titlestring.h
 
