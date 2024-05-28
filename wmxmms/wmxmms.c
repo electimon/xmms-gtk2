@@ -581,7 +581,7 @@ void init(void)
 		gtk_tooltips_set_delay(tooltips, 1000);
 	}
 
-	window = gtk_window_new(GDK_WINDOW_DIALOG);
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	if (has_geometry)
 		gtk_widget_set_uposition(window, win_x, win_y);
 	gtk_widget_set_usize(window, 64, 64);
@@ -616,7 +616,7 @@ void init(void)
 	hints.flags = StateHint;
 	XSetWMHints(GDK_DISPLAY(), GDK_WINDOW_XWINDOW(window->window), &hints);
 
-	icon_win = gtk_window_new(GDK_WINDOW_DIALOG);
+	icon_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_widget_set_app_paintable(icon_win, TRUE);
 	gtk_widget_set_uposition(icon_win, 0, 0);
 	gtk_widget_set_usize(icon_win, 64, 64);
