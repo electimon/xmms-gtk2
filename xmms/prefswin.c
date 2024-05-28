@@ -35,7 +35,7 @@ static GtkWidget *prefswin_eplugins_about, *prefswin_eplugins_use_cbox;
 static GtkWidget *prefswin_options_sd_entry, *prefswin_options_pbs_entry;
 	
 static GtkWidget *prefswin_options_font_entry, *prefswin_options_font_browse;
-static GtkWidget *prefswin_options_fontset, *prefswin_mainwin_font_entry;
+static GtkWidget *prefswin_mainwin_font_entry;
 static GtkWidget *prefswin_mainwin_xfont, *prefswin_options_mouse_spin;
 static gboolean updating_ilist = FALSE, updating_glist = FALSE, updating_vlist = FALSE, updating_elist = FALSE;
 
@@ -1064,8 +1064,6 @@ void create_prefs_window(void)
 	gtk_container_border_width(GTK_CONTAINER(prefswin_fonts_options_frame), 5);
 	prefswin_fonts_options_vbox = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(prefswin_fonts_options_frame), prefswin_fonts_options_vbox);
-	prefswin_options_fontset = prefswin_option_new_with_label(&cfg.use_fontsets, _("Use fontsets (Enable for multi-byte charset support)"));
-	gtk_box_pack_start_defaults(GTK_BOX(prefswin_fonts_options_vbox), prefswin_options_fontset);
 	
 	prefswin_fonts_playlist_frame = gtk_frame_new(_("Playlist"));
 	gtk_container_set_border_width(GTK_CONTAINER(prefswin_fonts_playlist_frame), 5);

@@ -861,25 +861,10 @@ GtkWidget * util_create_filebrowser(gboolean play_button)
 GdkFont *util_font_load(char *name)
 {
 	GdkFont *font;
+	PangoFontDescription *desc;
 
-	/* First try the prefered way, then just try to get some font */
-
-	if (!cfg.use_fontsets)
-	{
-		if ((font = gdk_font_load(name)) == NULL)
-			font = gdk_fontset_load(name);
-	}
-	else
-	{
-		if ((font = gdk_fontset_load(name)) == NULL)
-			font = gdk_font_load(name);
-	}
-
-	if (!font)
-	{
-		g_warning("Failed to open font: \"%s\".", name);
-		font = gdk_font_load("fixed");
-	}
+	desc = pango_font_description_from_string(name);
+	font = gdk_font_from_description(desc);
 
 	return font;
 }

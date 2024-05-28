@@ -19,9 +19,6 @@
  */
 #include "xmms.h"
 
-#ifdef HAVE_WCHAR_H
-#include <wchar.h>
-#endif
 #include <X11/Xatom.h>
 
 static GdkFont *playlist_list_font = NULL;
@@ -251,112 +248,6 @@ void playlist_list_button_release_cb(GtkWidget * widget, GdkEventButton * event,
 	pl->pl_auto_drag_up = FALSE;
 }
 
-#ifdef HAVE_WCHAR_H
-
-static GdkWChar * find_in_wstr(GdkWChar *haystack, char * needle)
-{
-	/* This will only work if needle is 7bit ASCII characters only */
-	GdkWChar *tmp = haystack;
-	int i = 0;
-
-	if (haystack == NULL)
-		return NULL;
-
-	if (needle == NULL || *needle == '\0')
-		return haystack;
-
-	for (; *tmp != L'\0'; tmp++)
-	{
-		if (*tmp == needle[i])
-		{
-			if (needle[i + 1] == '\0')
-				return (tmp - i);
-			i++;
-		}
-		else if (i > 0)
-		{
-			tmp -= i;
-			i = 0;
-		}
-	}
-	return NULL;
-}
-
-
-void playlist_list_draw_string_wc(PlayList_List *pl, GdkFont *font, gint line, gint width, gchar *text)
-{
-	GdkWChar *wtext;
-	int len, newlen;
-	/*
-	 * Convert the string to a wide character string to avoid
-	 * destroying multibyte strings, when converting underscores,
-	 * "%20" etc.
-	 */
-	/*
-	 * Allocate some extra space, we might extend it by one
-	 * character below
-	 */
-	wtext = g_malloc((strlen(text) + 3) * sizeof(GdkWChar));
-	len = gdk_mbstowcs(wtext, text, strlen(text) + 1);
-	if (len == -1)
-	{
-		/* Conversion failed */
-		for (len = 0; text[len] != '\0'; len++)
-			wtext[len] = text[len];
-	}
-	wtext[len] = L'\0';
-	if (cfg.convert_underscore)
-	{
-		int i;
-		for (i = 0; i < len; i++)
-			if (wtext[i] == L'_')
-				wtext[i] = L' ';
-	}
-
-	if (cfg.convert_twenty && len > 2)
-	{
-		GdkWChar *wtmp;
-		while ((wtmp = find_in_wstr(wtext, "%20")) != NULL)
-		{
-			GdkWChar *wtmp2 = wtmp + 3;
-			*(wtmp++) = L' ';
-			while (*wtmp2)
-				*(wtmp++) = *(wtmp2++);
-			*wtmp = L'\0';
-			len -= 2;
-		}
-	}
-		
-	newlen = len + 2;
-
-	while (gdk_text_width_wc(font, wtext, len) > width && len > 4)
-	{
-		/*
-		 * First check if the string gets short enough by
-		 * extending it with one character and then convert
-		 * three characters to dots.  If it's still too long,
-		 * remove charaters, one by one.
-		 */
-		len = newlen--;
-		wtext[len - 3] = L'.';
-		wtext[len - 2] = L'.';
-		wtext[len - 1] = L'.';
-		wtext[len] = L'\0';
-	}
-	
-	gdk_draw_text_wc(pl->pl_widget.parent, font, pl->pl_widget.gc,
-			 pl->pl_widget.x,
-			 pl->pl_widget.y + line * pl->pl_fheight + font->ascent,
-			 wtext, len);
-	g_free(wtext);
-}
-
-#else /* !HAVE_WCHAR_H */
-
-#define playlist_list_draw_string_wc playlist_list_draw_string
-
-#endif /* HAVE_WCHAR_H */
-
 void playlist_list_draw_string(PlayList_List *pl, GdkFont *font, gint line, gint width, gchar *text)
 {
 	int len;
@@ -490,12 +381,8 @@ void playlist_list_draw(Widget * w)
 		else
 			text = g_strdup_printf("%s", title);
 
-		if (cfg.use_fontsets)
-			playlist_list_draw_string_wc(pl, playlist_list_font,
-						     i - pl->pl_first, tw, text);
-		else
-			playlist_list_draw_string(pl, playlist_list_font,
-						  i - pl->pl_first, tw, text);
+		playlist_list_draw_string(pl, playlist_list_font,
+					  i - pl->pl_first, tw, text);
 		g_free(text);
 	}
 	PL_UNLOCK();

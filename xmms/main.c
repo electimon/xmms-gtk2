@@ -429,7 +429,6 @@ static void read_config(void)
 		xmms_cfg_read_boolean(cfgfile, "xmms", "playlist_visible", &cfg.playlist_visible);
 		xmms_cfg_read_boolean(cfgfile, "xmms", "playlist_transparent", &cfg.playlist_transparent);
 		xmms_cfg_read_string(cfgfile, "xmms", "playlist_font", &cfg.playlist_font);
-		xmms_cfg_read_boolean(cfgfile, "xmms", "use_fontsets", &cfg.use_fontsets);
 		xmms_cfg_read_boolean(cfgfile, "xmms", "mainwin_use_xfont", &cfg.mainwin_use_xfont);
 		xmms_cfg_read_string(cfgfile, "xmms", "mainwin_font", &cfg.mainwin_font);
 		xmms_cfg_read_int(cfgfile, "xmms", "playlist_position", &cfg.playlist_position);
@@ -494,9 +493,9 @@ static void read_config(void)
 		cfg.mainwin_font = NULL;
 	}
 	if (cfg.playlist_font == NULL)
-		cfg.playlist_font = g_strdup("-adobe-helvetica-bold-r-*-*-10-*");
+		cfg.playlist_font = g_strdup("Sans Bold 8");
 	if (cfg.mainwin_font == NULL)
-		cfg.mainwin_font = g_strdup("-adobe-helvetica-medium-r-*-*-8-*");
+		cfg.mainwin_font = g_strdup("Sans Bold 9");
 	if (cfg.gentitle_format == NULL)
 		cfg.gentitle_format = g_strdup("%p - %t");
 	if (cfg.outputplugin == NULL)
@@ -596,7 +595,6 @@ void save_config(void)
 	xmms_cfg_write_boolean(cfgfile, "xmms", "playlist_visible", cfg.playlist_visible);
 	xmms_cfg_write_boolean(cfgfile, "xmms", "playlist_transparent", cfg.playlist_transparent);
 	xmms_cfg_write_string(cfgfile, "xmms", "playlist_font", cfg.playlist_font);
-	xmms_cfg_write_boolean(cfgfile, "xmms", "use_fontsets", cfg.use_fontsets);
 	xmms_cfg_write_boolean(cfgfile, "xmms", "mainwin_use_xfont", cfg.mainwin_use_xfont);
 	xmms_cfg_write_string(cfgfile, "xmms", "mainwin_font", cfg.mainwin_font);
 	xmms_cfg_write_int(cfgfile, "xmms", "playlist_position", get_playlist_position());
