@@ -110,7 +110,6 @@ static int gtk_entry_key_press(GtkWidget *widget, GdkEventKey *event)
 
 	int return_val;
 	guint initial_pos, sel_start_pos, sel_end_pos;
-	gboolean has_selection;
 	int extend_selection;
 	gboolean extend_start = FALSE;
 
@@ -122,7 +121,7 @@ static int gtk_entry_key_press(GtkWidget *widget, GdkEventKey *event)
 	editable = GTK_EDITABLE(widget);
 	return_val = FALSE;
 
-	if (gtk_editable_get_editable(editable))
+	if (editable->editable)
 		/* Let the regular entry handler do it */
 		return FALSE;
 
@@ -130,18 +129,18 @@ static int gtk_entry_key_press(GtkWidget *widget, GdkEventKey *event)
 
 	extend_selection = event->state & GDK_SHIFT_MASK;
 
-	has_selection = gtk_editable_get_selection_bounds(editable, &sel_start_pos, &sel_end_pos);
-	/* TODO what to do when there is no selection? */
-
+	sel_start_pos = editable->selection_start_pos;
+	sel_end_pos = editable->selection_end_pos;
+	
 	if (extend_selection)
 	{
 		if (sel_start_pos == sel_end_pos)
 		{
-			sel_start_pos = initial_pos;
-			sel_end_pos = initial_pos;
+			sel_start_pos = editable->current_pos;
+			sel_end_pos = editable->current_pos;
 		}
 
-		extend_start = (initial_pos == sel_start_pos);
+		extend_start = (editable->current_pos == sel_start_pos);
 	}
 
 	switch (event->keyval)
@@ -225,7 +224,7 @@ static int gtk_entry_key_press(GtkWidget *widget, GdkEventKey *event)
 			}
 	}
 
-	if (return_val && (gtk_editable_get_position(editable) != initial_pos))
+	if (return_val && (editable->current_pos != initial_pos))
 	{
 		if (extend_selection)
 		{
@@ -283,29 +282,39 @@ static void gtk_move_forward_word (GtkEntry *entry)
 	editable = GTK_EDITABLE (entry);
 
 	/* Prevent any leak of information */
-	if (!gtk_entry_get_visibility(editable))
+	if (!editable->visible)
 	{
 		gtk_editable_set_position(GTK_EDITABLE(entry), -1);
 		return;
 	}
 
-	if (entry->text && (gtk_editable_get_position(editable) < entry->text_length))
+	if (entry->text && (editable->current_pos < entry->text_length))
 	{
 		text = entry->text;
-		i = gtk_editable_get_position(editable);
-
-		if (
+		i = editable->current_pos;
+	  
+		if ((entry->use_wchar && !gdk_iswalnum(text[i])) ||
 		    !isalnum(text[i]))
 			for (; i < entry->text_length; i++)
 			{
-				if (isalnum(text[i]))
-					break;
+				if (entry->use_wchar)
+				{
+					if (gdk_iswalnum(text[i]))
+						break;
+					else if (isalnum(text[i]))
+						break;
+				}
 			}
 
 		for (; i < entry->text_length; i++)
 		{
-			if (isalnum(text[i]))
-				break;
+			if (entry->use_wchar)
+			{
+				if (gdk_iswalnum(text[i]))
+					break;
+				else if (isalnum(text[i]))
+					break;
+			}
 		}
 
 		gtk_editable_set_position(GTK_EDITABLE(entry), i);
@@ -321,27 +330,32 @@ static void gtk_move_backward_word(GtkEntry *entry)
 	editable = GTK_EDITABLE (entry);
 
 	/* Prevent any leak of information */
-	if (!gtk_entry_get_visibility(editable))
+	if (!editable->visible)
 	{
 		gtk_editable_set_position(GTK_EDITABLE(entry), 0);
 		return;
 	}
 
-	if (entry->text && gtk_editable_get_position(editable) > 0)
+	if (entry->text && editable->current_pos > 0)
 	{
 		text = entry->text;
-		i = gtk_editable_get_position(editable);
+		i = editable->current_pos;
 
-		if (
+		if ((entry->use_wchar && !gdk_iswalnum(text[i])) ||
 		    !isalnum(text[i]))
 			for (; i >= 0; i--)
 			{
-				if (gdk_iswalnum(text[i]))
-					break;
+				if (entry->use_wchar)
+				{
+					if (gdk_iswalnum(text[i]))
+						break;
+					else if (isalnum(text[i]))
+						break;
+				}
 			}
 		for (; i >= 0; i--)
 		{
-			if (
+			if ((entry->use_wchar && !gdk_iswalnum(text[i])) ||
 			    !isalnum(text[i]))
 			{
 				i++;
