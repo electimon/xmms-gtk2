@@ -922,3 +922,58 @@ void util_dialog_keypress_cb(GtkWidget *w, GdkEventKey *event, gpointer data)
 	if (event && event->keyval == GDK_Escape)
 		gtk_widget_destroy(w);
 }
+
+gchar *str_to_utf8_fallback(const gchar * str)
+{
+	gchar *out_str, *convert_str, *chr;
+
+	/* NULL in NULL out */
+	if (!str)
+		return NULL;
+
+	convert_str = g_strdup(str);
+	for (chr = convert_str; *chr; chr++) {
+		if (*chr & 0x80)
+			*chr = '?';
+	}
+
+	out_str = g_strconcat(convert_str, N_("  (invalid UTF-8)"), NULL);
+	g_free(convert_str);
+
+	return out_str;
+}
+
+gchar *filename_to_utf8(const gchar * filename)
+{
+	gchar *out_str;
+
+	/* NULL in NULL out */
+	if (!filename)
+		return NULL;
+
+	if ((out_str = g_filename_to_utf8(filename, -1, NULL, NULL, NULL)))
+		return out_str;
+
+	return str_to_utf8_fallback(filename);
+}
+
+gchar *str_to_utf8(const gchar * str)
+{
+	gchar *out_str;
+
+	/* NULL in NULL out */
+	if (!str)
+		return NULL;
+
+	/* already UTF-8? */
+	if (g_utf8_validate(str, -1, NULL))
+		return g_strdup(str);
+
+	/* assume encoding associated with locale */
+	if ((out_str = g_locale_to_utf8(str, -1, NULL, NULL, NULL)))
+		return out_str;
+
+	/* all else fails, we mask off character codes >= 128,
+	 *      replace with '?' */
+	return str_to_utf8_fallback(str);
+}

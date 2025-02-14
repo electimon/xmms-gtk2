@@ -1859,7 +1859,7 @@ static gboolean playlist_get_info_entry(PlaylistEntry *entry)
 		return FALSE;
 
 	/* entry is still around */
-	entry->title = temp_title;
+	entry->title = str_to_utf8(temp_title);
 	entry->length = temp_length;
 
 	return TRUE;

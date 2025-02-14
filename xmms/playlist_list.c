@@ -21,7 +21,7 @@
 
 #include <X11/Xatom.h>
 
-static GdkFont *playlist_list_font = NULL;
+static PangoFontDescription *playlist_list_font = NULL;
 
 static int playlist_list_auto_drag_down_func(gpointer data)
 {
@@ -248,8 +248,9 @@ void playlist_list_button_release_cb(GtkWidget * widget, GdkEventButton * event,
 	pl->pl_auto_drag_up = FALSE;
 }
 
-void playlist_list_draw_string(PlayList_List *pl, GdkFont *font, gint line, gint width, gchar *text)
+void playlist_list_draw_string(PlayList_List *pl, PangoFontDescription *font, gint line, gint width, gchar *text)
 {
+	PangoLayout *layout = NULL; // surely we dont access a null pointer somehow, right?
 	int len;
 	char *tmp;
 
@@ -266,7 +267,7 @@ void playlist_list_draw_string(PlayList_List *pl, GdkFont *font, gint line, gint
 			*tmp = '\0';
 		}
 	len = strlen(text);
-	while (gdk_text_width(font, text, len) > width && len > 4)
+	while (gdk_text_width(gdk_font_from_description(font), text, len) > width && len > 4)
 	{
 		len--;
 		text[len - 3] = '.';
@@ -274,8 +275,14 @@ void playlist_list_draw_string(PlayList_List *pl, GdkFont *font, gint line, gint
 		text[len - 1] = '.';
 		text[len] = '\0';
 	}
-	
-	gdk_draw_text(pl->pl_widget.parent, font, pl->pl_widget.gc, pl->pl_widget.x, pl->pl_widget.y + line * pl->pl_fheight + font->ascent, text, len);
+	layout = gtk_widget_create_pango_layout(playlistwin, text);
+
+	pango_layout_set_font_description(layout, playlist_list_font);
+	gdk_draw_layout(pl->pl_widget.parent, pl->pl_widget.gc,
+					pl->pl_widget.x,
+					pl->pl_widget.y, layout);
+
+	g_object_unref(layout);
 }
 
 void playlist_list_draw(Widget * w)
@@ -298,7 +305,7 @@ void playlist_list_draw(Widget * w)
 	gdk_draw_rectangle(obj, gc, TRUE, pl->pl_widget.x, pl->pl_widget.y,
 			   width, height);
 
-	if (playlist_list_font == NULL)
+	if (gdk_font_from_description(playlist_list_font) == NULL)
 	{
 		g_log(NULL, G_LOG_LEVEL_CRITICAL,
 		      "Couldn't open playlist font");
@@ -308,7 +315,7 @@ void playlist_list_draw(Widget * w)
 
 	PL_LOCK();
 	list = get_playlist();
-	pl->pl_fheight = playlist_list_font->ascent + playlist_list_font->descent + 1;
+	pl->pl_fheight = gdk_font_from_description(playlist_list_font)->ascent + gdk_font_from_description(playlist_list_font)->descent + 1;
 	pl->pl_num_visible = height / pl->pl_fheight;
 
 	max_first = g_list_length(list) - pl->pl_num_visible;
@@ -364,18 +371,19 @@ void playlist_list_draw(Widget * w)
 
 			sprintf(tail, "%s%s", qstr, length);
 			x = pl->pl_widget.x + width -
-				gdk_text_width(playlist_list_font,
+				gdk_text_width(gdk_font_from_description(playlist_list_font),
 					       tail, strlen(tail)) - 2;
 			y = pl->pl_widget.y +
 				(i - pl->pl_first) * pl->pl_fheight +
-				playlist_list_font->ascent;
-			gdk_draw_text(obj, playlist_list_font, gc, x, y,
+				gdk_font_from_description(playlist_list_font)->ascent;
+			gdk_draw_text(obj, gdk_font_from_description(playlist_list_font), gc, x, y,
 				      tail, strlen(tail));
-			tw = width - gdk_text_width(playlist_list_font,
+			tw = width - gdk_text_width(gdk_font_from_description(playlist_list_font),
 						    tail, strlen(tail)) - 5;
 		}
 		else
 			tw = width;
+
 		if (cfg.show_numbers_in_pl)
 			text = g_strdup_printf("%d. %s", i + 1, title);
 		else
@@ -413,8 +421,5 @@ PlayList_List *create_playlist_list(GList ** wlist, GdkPixmap * parent, GdkGC * 
 
 void playlist_list_set_font(char *font)
 {
-	if (playlist_list_font)
-		gdk_font_unref(playlist_list_font);
-
-	playlist_list_font = util_font_load(font);
+	playlist_list_font = pango_font_description_from_string(font);
 }
