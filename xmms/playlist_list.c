@@ -277,7 +277,6 @@ void playlist_list_draw_string(PlayList_List *pl, gint line, gint width, gchar *
 void playlist_list_draw(Widget * w)
 {
 	PlayList_List *pl = (PlayList_List *) w;
-	PangoContext *context = gtk_widget_get_pango_context(playlistwin);
 	GList *list;
 	GdkGC *gc;
 	GdkPixmap *obj;
@@ -306,7 +305,7 @@ void playlist_list_draw(Widget * w)
 
 	PL_LOCK();
 	list = get_playlist();
-	pl->pl_fheight = char_height_for_context(context, playlist_list_font);
+	pl->pl_fheight = char_height(playlist_list_font);
 	pl->pl_num_visible = height / pl->pl_fheight;
 
 	max_first = g_list_length(list) - pl->pl_num_visible;
@@ -363,7 +362,7 @@ void playlist_list_draw(Widget * w)
 
 			sprintf(tail, "%s%s", qstr, length);
 			x = pl->pl_widget.x + width -
-				char_width_for_context(context, playlist_list_font) * strlen(tail) - 10;
+				char_width(playlist_list_font) * strlen(tail) - 10;
 			y = pl->pl_widget.y +
 				(i - pl->pl_first) * pl->pl_fheight;
 			layout = gtk_widget_create_pango_layout(playlistwin, tail);
@@ -371,7 +370,7 @@ void playlist_list_draw(Widget * w)
 			pango_layout_set_font_description(layout, playlist_list_font);
 			gdk_draw_layout(obj, gc, x, y, layout);
 			g_object_unref(layout);
-			tw = width - char_width_for_context(context, playlist_list_font) * strlen(tail) - 15;
+			tw = width - char_width(playlist_list_font) * strlen(tail) - 15;
 		}
 		else
 			tw = width;

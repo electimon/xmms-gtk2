@@ -36,7 +36,6 @@ void util_item_factory_popup_with_data(GtkItemFactory * ifactory, gpointer data,
 GtkWidget *util_create_add_url_window(gchar *caption, GtkSignalFunc ok_func, GtkSignalFunc enqueue_func);
 GtkWidget *util_create_filebrowser(gboolean clear_pl_on_ok);
 gboolean util_filebrowser_is_dir(GtkFileSelection * filesel);
-GdkFont *util_font_load(gchar *name);
 void util_set_cursor(GtkWidget *window);
 void util_dump_menu_rc(void);
 void util_read_menu_rc(void);
@@ -44,8 +43,10 @@ void util_dialog_keypress_cb(GtkWidget *w, GdkEventKey *event, gpointer data);
 gchar *filename_to_utf8(const gchar * filename);
 gchar *str_to_utf8(const gchar * str);
 gchar *str_to_utf8_fallback(const gchar * str);
-int char_height_for_context(PangoContext *context, PangoFontDescription *font_description);
-int char_width_for_context(PangoContext *context, PangoFontDescription *font_description);
+int char_height(PangoFontDescription *font_description);
+int char_width(PangoFontDescription *font_description);
+int string_width(PangoFontDescription *font_description, gchar *string);
+gboolean util_fit_font_to_layout(PangoLayout *layout, int max_size);
 #if ENABLE_NLS
     gchar* util_menu_translate(const gchar *path, gpointer func_data);
 #else

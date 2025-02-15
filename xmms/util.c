@@ -872,17 +872,6 @@ GtkWidget * util_create_filebrowser(gboolean play_button)
 	return filebrowser;
 }
 
-GdkFont *util_font_load(char *name)
-{
-	GdkFont *font;
-	PangoFontDescription *desc;
-
-	desc = pango_font_description_from_string(name);
-	font = gdk_font_from_description(desc);
-
-	return font;
-}
-
 #ifdef ENABLE_NLS
 char* util_menu_translate(const char *path, void *func_data)
 {
@@ -992,21 +981,55 @@ gchar *str_to_utf8(const gchar * str)
 	return str_to_utf8_fallback(str);
 }
 
-int char_height_for_context(PangoContext *context, PangoFontDescription *font_description)
+int char_height(PangoFontDescription *font_description)
 {
-	int ascent, descent;
-	PangoFontMetrics *metrics = pango_context_get_metrics(context, font_description, NULL);
-	ascent = pango_font_metrics_get_ascent(metrics) / PANGO_SCALE;
-	descent = pango_font_metrics_get_descent(metrics) / PANGO_SCALE;
-	pango_font_metrics_unref(metrics);
-	return ascent + abs(descent);
+	GdkFont *font = gdk_font_from_description(font_description);
+	int width = font->ascent + font->descent;
+	gdk_font_unref(font);
+	return width;
 }
 
-int char_width_for_context(PangoContext *context, PangoFontDescription *font_description)
+int char_width(PangoFontDescription *font_description)
 {
-	int width;
-	PangoFontMetrics *metrics = pango_context_get_metrics(context, font_description, NULL);
-	width = pango_font_metrics_get_approximate_char_width(metrics) / PANGO_SCALE;
+	PangoFontMetrics *metrics = pango_context_get_metrics(gtk_widget_get_pango_context(mainwin), font_description, NULL);
+	int width_in_pixels = (int)round((double)pango_font_metrics_get_approximate_char_width(metrics) / PANGO_SCALE);
 	pango_font_metrics_unref(metrics);
+	return width_in_pixels;
+}
+
+int string_width(PangoFontDescription *font_description, gchar *string)
+{
+	GdkFont *font = gdk_font_from_description(font_description);
+	int width = gdk_string_width(font, string);
+	gdk_font_unref(font);
 	return width;
+}
+
+gboolean util_fit_font_to_layout(PangoLayout *layout, int max_size) {
+	int layout_height, layout_width;
+	PangoFontDescription *desc = pango_font_description_copy(pango_layout_get_font_description(layout));
+	int min_size = 10;  // Minimum font size in points (reasonable starting point)
+	max_size *= PANGO_SCALE;
+	int best_size = min_size * PANGO_SCALE;
+	//printf("Min Size: %d, Max Size: %d\n", min_size, max_size);
+	while (min_size <= max_size / PANGO_SCALE) {
+		int mid_size = (min_size + max_size / PANGO_SCALE) / 2;
+		pango_font_description_set_size(desc, mid_size * PANGO_SCALE);
+		pango_layout_set_font_description(layout, desc);
+		pango_layout_get_size(layout, &layout_width, &layout_height);
+		//printf("Checking size: %d, Layout Height: %d\n", mid_size, layout_height / PANGO_SCALE);
+		if (layout_height <= max_size) {
+			best_size = mid_size * PANGO_SCALE;
+			min_size = mid_size + 1;
+			//printf("Size %d fits, trying larger sizes.\n", mid_size);
+		} else {
+			max_size = mid_size * PANGO_SCALE - 1;
+			//printf("Size %d doesn't fit, trying smaller sizes.\n", mid_size);
+		}
+	}
+	pango_font_description_set_size(desc, best_size - PANGO_SCALE*2);
+	pango_layout_set_font_description(layout, desc);
+	//printf("Final Font Size: %d\n", best_size / PANGO_SCALE);
+	pango_font_description_free(desc);
+	return 1;
 }

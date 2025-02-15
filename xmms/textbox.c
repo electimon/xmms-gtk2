@@ -162,49 +162,25 @@ void textbox_set_text(TextBox * tb, gchar * text)
 
 static void textbox_generate_xfont_pixmap(TextBox * tb, gchar *pixmaptext)
 {
-	gint length, i;
-	GdkGC *gc, *maskgc;
-	GdkColor *c, pattern;
-	GdkBitmap *mask;
+	PangoLayout *layout = gtk_widget_create_pango_layout(mainwin, pixmaptext);
+	int cw = char_width(tb->tb_font_desc);
+	int scrollable_padding = 0;
 
-	length = strlen(pixmaptext);
+	if (tb->tb_is_scrollable) {
+		scrollable_padding = 4; // the buffer is *** so lets add 4 for the buffer and start of line
+	}
 
-	tb->tb_pixmap_width = gdk_text_width(tb->tb_font, pixmaptext, length);
+	tb->tb_pixmap_width = ((cw * strlen(pixmaptext)) - tb->tb_widget.width) + (cw * scrollable_padding);
 	if (tb->tb_pixmap_width < tb->tb_widget.width)
 		tb->tb_pixmap_width = tb->tb_widget.width;
+	//printf("Width of pixmap: %d\n", tb->tb_pixmap_width);
+	pango_layout_set_font_description(layout, tb->tb_font_desc);
+	util_fit_font_to_layout(layout, tb->tb_widget.height - PANGO_SCALE*2); // looks nicer when its slightly smaller
 	tb->tb_pixmap = gdk_pixmap_new(mainwin->window, tb->tb_pixmap_width,
-				       tb->tb_widget.height,
-				       gdk_rgb_get_visual()->depth);
-	gc = tb->tb_widget.gc;
-	c = get_skin_color(SKIN_TEXTBG);
-	for (i = 0; i < tb->tb_widget.height; i++)
-	{
-		gdk_gc_set_foreground(gc, &c[6 * i / tb->tb_widget.height]);
-		gdk_draw_line(tb->tb_pixmap, gc, 0, i, tb->tb_pixmap_width, i);
-	}
-
-	mask = gdk_pixmap_new(mainwin->window, tb->tb_pixmap_width,
-			      tb->tb_widget.height, 1);
-	maskgc = gdk_gc_new(mask);
-	pattern.pixel = 0;
-	gdk_gc_set_foreground(maskgc, &pattern);
-	gdk_draw_rectangle(mask, maskgc, TRUE, 0, 0,
-			   tb->tb_pixmap_width, tb->tb_widget.height);
-	pattern.pixel = 1;
-	gdk_gc_set_foreground(maskgc, &pattern);
-	gdk_draw_text(mask, tb->tb_font, maskgc, 0,
-		      tb->tb_font->ascent, pixmaptext, length);
-	gdk_gc_unref(maskgc);
-
-	gdk_gc_set_clip_mask(gc, mask);
-	c = get_skin_color(SKIN_TEXTFG);
-	for (i = 0; i < tb->tb_widget.height; i++)
-	{
-		gdk_gc_set_foreground(gc, &c[6 * i / tb->tb_widget.height]);
-		gdk_draw_line(tb->tb_pixmap, gc, 0, i, tb->tb_pixmap_width, i);
-	}
-	gdk_pixmap_unref(mask);
-	gdk_gc_set_clip_mask(gc, NULL);
+								   tb->tb_widget.height-1,
+								gdk_rgb_get_visual()->depth);
+	gdk_draw_layout_with_colors(tb->tb_pixmap, tb->tb_widget.gc, 0, -3, layout, get_skin_color(SKIN_TEXTFG), get_skin_color(SKIN_TEXTBG)); // TODO the -3 has to go one day
+	g_object_unref(layout);
 }
 
 static void textbox_handle_special_char(char c, int *x, int *y)
@@ -394,7 +370,7 @@ static void textbox_generate_pixmap(TextBox * tb)
 				tag = TEXTBOX_SCROLL_TIMEOUT;
 
 			tb->tb_timeout_tag =
-				gtk_timeout_add(tag, textbox_scroll, tb);
+				gtk_timeout_add(tag, G_SOURCE_FUNC(textbox_scroll), tb);
 		}
 	}
 	else
@@ -455,7 +431,7 @@ void textbox_set_scroll(TextBox * tb, gboolean s)
 		else
 			tag = TEXTBOX_SCROLL_TIMEOUT;
 
-		tb->tb_timeout_tag = gtk_timeout_add(tag, textbox_scroll, tb);
+		tb->tb_timeout_tag = gtk_timeout_add(tag, G_SOURCE_FUNC(textbox_scroll), tb);
 	}
 	else
 	{
@@ -477,20 +453,21 @@ void textbox_set_xfont(TextBox *tb, gboolean use_xfont, gchar *fontname)
 	tb->tb_font = NULL;
 	tb->tb_widget.y = tb->tb_nominal_y;
 	tb->tb_widget.height = tb->tb_nominal_height;
-	
+
 	/* Make sure the pixmap is regenerated */
 	g_free(tb->tb_pixmap_text);
 	tb->tb_pixmap_text = NULL;
-	
+
 	if (!use_xfont || strlen(fontname) == 0)
 		return;
-	tb->tb_font = util_font_load(fontname);
-	if (tb->tb_font == NULL)
+	tb->tb_font_desc = pango_font_description_from_string(fontname);
+	if (tb->tb_font_desc == NULL)
 		return;
 
-	tb->tb_widget.height = tb->tb_font->ascent + tb->tb_font->descent;
+	tb->tb_font = gdk_font_from_description(tb->tb_font_desc);
+	tb->tb_widget.height = char_height(tb->tb_font_desc);
 	if (tb->tb_widget.height > tb->tb_nominal_height)
-		tb->tb_widget.y -= (tb->tb_widget.height - tb->tb_nominal_height) / 2;
+		tb->tb_widget.y -= ((tb->tb_widget.height - tb->tb_nominal_height) / 2);
 	else
 		tb->tb_widget.height = tb->tb_nominal_height;
 }
@@ -502,7 +479,7 @@ TextBox *create_textbox(GList ** wlist, GdkPixmap * parent, GdkGC * gc, gint x, 
 	tb = g_malloc0(sizeof (TextBox));
 	tb->tb_widget.parent = parent;
 	tb->tb_widget.gc = gc;
-	tb->tb_widget.x = x;
+	tb->tb_widget.x = x-1;
 	tb->tb_widget.y = y;
 	tb->tb_widget.width = w;
 	tb->tb_widget.height = 6;
@@ -525,7 +502,7 @@ void free_textbox(TextBox * tb)
 	if (tb->tb_pixmap)
 		gdk_pixmap_unref(tb->tb_pixmap);
 	if (tb->tb_font)
-		gdk_font_unref(tb->tb_font);	
+		gdk_font_unref(tb->tb_font);
 	g_free(tb->tb_text);
 	g_free(tb);
 }

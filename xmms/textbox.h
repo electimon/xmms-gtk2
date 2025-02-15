@@ -36,6 +36,7 @@ typedef struct
 	gint tb_nominal_y, tb_nominal_height;
 	int tb_skin_id;
 	SkinIndex tb_skin_index;
+	PangoFontDescription *tb_font_desc;
 	GdkFont *tb_font;
 }
 TextBox;
