@@ -983,10 +983,11 @@ gchar *str_to_utf8(const gchar * str)
 
 int char_height(PangoFontDescription *font_description)
 {
-	GdkFont *font = gdk_font_from_description(font_description);
-	int width = font->ascent + font->descent;
-	gdk_font_unref(font);
-	return width;
+	PangoFontMetrics *metrics = pango_context_get_metrics(gtk_widget_get_pango_context(mainwin), font_description, NULL);
+	int ascent = pango_font_metrics_get_ascent(metrics) / PANGO_SCALE;
+	int descent = pango_font_metrics_get_descent(metrics) / PANGO_SCALE;
+	pango_font_metrics_unref(metrics);
+	return ascent + descent;
 }
 
 int char_width(PangoFontDescription *font_description)
@@ -1000,9 +1001,7 @@ int char_width(PangoFontDescription *font_description)
 int string_width(PangoFontDescription *font_description, gchar *string)
 {
 	GdkFont *font = gdk_font_from_description(font_description);
-	int width = gdk_string_width(font, string);
-	gdk_font_unref(font);
-	return width;
+	return gdk_string_width(font, string);
 }
 
 gboolean util_fit_font_to_layout(PangoLayout *layout, int max_size) {

@@ -170,7 +170,7 @@ static void textbox_generate_xfont_pixmap(TextBox * tb, gchar *pixmaptext)
 		scrollable_padding = 4; // the buffer is *** so lets add 4 for the buffer and start of line
 	}
 
-	tb->tb_pixmap_width = ((cw * strlen(pixmaptext)) - tb->tb_widget.width) + (cw * scrollable_padding);
+	tb->tb_pixmap_width = ((cw * strlen(pixmaptext)) - tb->tb_widget.width);
 	if (tb->tb_pixmap_width < tb->tb_widget.width)
 		tb->tb_pixmap_width = tb->tb_widget.width;
 	//printf("Width of pixmap: %d\n", tb->tb_pixmap_width);
@@ -179,6 +179,12 @@ static void textbox_generate_xfont_pixmap(TextBox * tb, gchar *pixmaptext)
 	tb->tb_pixmap = gdk_pixmap_new(mainwin->window, tb->tb_pixmap_width,
 								   tb->tb_widget.height-1,
 								gdk_rgb_get_visual()->depth);
+	GdkColor *c = get_skin_color(SKIN_TEXTBG);
+	for (int i = 0; i < tb->tb_widget.height; i++)
+	{
+		gdk_gc_set_foreground(tb->tb_widget.gc, &c[6 * i / tb->tb_widget.height]);
+		gdk_draw_line(tb->tb_pixmap, tb->tb_widget.gc, 0, i, tb->tb_pixmap_width, i);
+	}
 	gdk_draw_layout_with_colors(tb->tb_pixmap, tb->tb_widget.gc, 0, -3, layout, get_skin_color(SKIN_TEXTFG), get_skin_color(SKIN_TEXTBG)); // TODO the -3 has to go one day
 	g_object_unref(layout);
 }
@@ -465,7 +471,7 @@ void textbox_set_xfont(TextBox *tb, gboolean use_xfont, gchar *fontname)
 		return;
 
 	tb->tb_font = gdk_font_from_description(tb->tb_font_desc);
-	tb->tb_widget.height = char_height(tb->tb_font_desc);
+	tb->tb_widget.height = tb->tb_font->ascent + tb->tb_font->descent;
 	if (tb->tb_widget.height > tb->tb_nominal_height)
 		tb->tb_widget.y -= ((tb->tb_widget.height - tb->tb_nominal_height) / 2);
 	else
@@ -479,7 +485,7 @@ TextBox *create_textbox(GList ** wlist, GdkPixmap * parent, GdkGC * gc, gint x, 
 	tb = g_malloc0(sizeof (TextBox));
 	tb->tb_widget.parent = parent;
 	tb->tb_widget.gc = gc;
-	tb->tb_widget.x = x-1;
+	tb->tb_widget.x = x;
 	tb->tb_widget.y = y;
 	tb->tb_widget.width = w;
 	tb->tb_widget.height = 6;
