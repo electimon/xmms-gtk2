@@ -171,7 +171,7 @@ GtkItemFactoryEntry playlistwin_popup_menu_entries[] =
 	{N_("/Remove/Misc"), NULL, NULL, 0, "<Item>"},
 
 	{N_("/Selection"), NULL, NULL, 0, "<Branch>"},
-	{N_("/Selection/Select All"), NULL, playlistwin_popup_menu_callback, SEL_ALL, "<Item>"},
+	{N_("/Selection/Select All"), "<Primary>a", playlistwin_popup_menu_callback, SEL_ALL, "<Item>"},
 	{N_("/Selection/Select None"), NULL, playlistwin_popup_menu_callback, SEL_ZERO, "<Item>"},
 	{N_("/Selection/Invert Selection"), NULL, playlistwin_popup_menu_callback, SEL_INV, "<Item>"},
 	{N_("/Selection/-"), NULL, NULL, 0, "<Separator>"},
@@ -1618,15 +1618,31 @@ static gboolean playlistwin_keypress(GtkWidget * w, GdkEventKey * event, gpointe
 			refresh=FALSE;
 			break;
 		default:
-			/* TODO give a non-null quark? */
-			if (!gtk_accel_group_activate(playlistwin_accel, 0, G_OBJECT(playlistwin), event->keyval, event->state))
+			if (!gtk_window_activate_key(GTK_WINDOW(playlistwin), event)) {
 				gtk_widget_event(mainwin, (GdkEvent *) event);
+			}
 			refresh = FALSE;
 			break;
 	}
 	if (refresh)
 		playlistwin_update_list();
 
+	return TRUE;
+}
+
+static gboolean playlistwin_scroll_event(GtkWidget * w, GdkEventScroll * event, gpointer data)
+{
+	GdkScrollDirection direction = event->direction;
+	switch (direction) {
+		case GDK_SCROLL_DOWN:
+			playlistwin_scroll_down_pushed();
+			break;
+		case GDK_SCROLL_UP:
+			playlistwin_scroll_up_pushed();
+			break;
+		default:
+			break;
+	}
 	return TRUE;
 }
 
@@ -1952,6 +1968,7 @@ static void playlistwin_create_gtk(void)
 	gtk_signal_connect(GTK_OBJECT(playlistwin), "drag-data-received", GTK_SIGNAL_FUNC(playlistwin_drag_data_received), NULL);
 	gtk_signal_connect(GTK_OBJECT(playlistwin), "key-press-event", GTK_SIGNAL_FUNC(playlistwin_keypress), NULL);
 	gtk_signal_connect(GTK_OBJECT(playlistwin), "selection_received", GTK_SIGNAL_FUNC(selection_received), NULL);
+	gtk_signal_connect(GTK_OBJECT(playlistwin), "scroll_event", GTK_SIGNAL_FUNC(playlistwin_scroll_event), NULL);
 
 	if (!cfg.show_wm_decorations)
 		gdk_window_set_decorations(playlistwin->window, 0);
@@ -2012,6 +2029,7 @@ void playlistwin_create(void)
 	playlistwin_create_gtk();
 	playlistwin_gc = gdk_gc_new(playlistwin->window);
 	playlistwin_create_widgets();
+	gtk_window_add_accel_group(GTK_WINDOW(playlistwin), playlistwin_accel);
 
 	playlistwin_update_info();
 }

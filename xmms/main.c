@@ -1420,8 +1420,8 @@ gboolean mainwin_keypress(GtkWidget * w, GdkEventKey * event, gpointer data)
 			input_seek(CLAMP(input_get_time() + 5000, 0, playlist_get_current_length()) / 1000);
 		break;
 	default:
-	     break;
-
+		gtk_window_activate_key(GTK_WINDOW(mainwin), event);
+		break;
 	}
 
 	return TRUE;
@@ -4058,75 +4058,6 @@ void segfault_handler(int sig)
 	exit(1);
 }
 
-static gboolean pposition_configure(GtkWidget *w, GdkEventConfigure *event, gpointer data)
-{
-	gint x,y;
-	gdk_window_get_deskrelative_origin(w->window, &x, &y);
-	if(x != 0 || y != 0)
-		pposition_broken = TRUE;
-	gtk_widget_destroy(w);
-
-	return FALSE;
-}
-
-void check_pposition(void)
-{
-	GtkWidget *window;
-	GdkBitmap *mask;
-	GdkGC *gc;
-	GdkColor pattern;
-
-	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_wmclass(GTK_WINDOW(window), "XMMS_Player", "xmms");
-	gtk_signal_connect(GTK_OBJECT(window), "configure_event",
-			   GTK_SIGNAL_FUNC(pposition_configure), NULL);
-	gtk_widget_set_uposition(window, 0, 0);
-	gtk_widget_realize(window);
-
-	gtk_widget_set_usize(window, 1, 1);
-	gdk_window_set_decorations(window->window, 0);
-
-	mask = gdk_pixmap_new(window->window, 1, 1, 1);
-	gc = gdk_gc_new(mask);
-	pattern.pixel = 0;
-	gdk_gc_set_foreground(gc, &pattern);
-	gdk_draw_rectangle(mask, gc, TRUE, 0, 0, 1, 1);
-	gdk_gc_destroy(gc);
-	gtk_widget_shape_combine_mask(window, mask, 0, 0);
-
-	gtk_widget_show(window);
-
-	while (g_main_iteration(FALSE))
-		;
-}
-
-#if 0
-
-static GdkFilterReturn save_yourself_filter(GdkXEvent *xevent, GdkEvent *event, gpointer data)
-{
-	Atom save_yourself, protocols;
-
-	save_yourself = gdk_atom_intern("WM_SAVE_YOURSELF", FALSE);
-	protocols = gdk_atom_intern("WM_PROTOCOLS", FALSE);
-
-	if (((XEvent*)xevent)->type == ClientMessage)
-	{
-		XClientMessageEvent *cme = (XClientMessageEvent*) xevent;
-		if (cme->message_type == protocols &&
-		    (Atom) cme->data.l[0] == save_yourself)
-		{
-			save_config();
-			XSetCommand(GDK_DISPLAY(),
-				    GDK_WINDOW_XWINDOW(mainwin->window),
-				    restart_argv, restart_argc);
-			return GDK_FILTER_REMOVE;
-		}
-	}
-
-	return GDK_FILTER_CONTINUE;
-}
-#endif
-
 static void enable_x11r5_session_management(int argc, char **argv)
 {
 	/*
@@ -4257,7 +4188,6 @@ int main(int argc, char **argv)
 	}
 
 	check_wm_hints();
-//	check_pposition();
 	mainwin_accel = gtk_accel_group_new();
 
 	sm_client_id = sm_init(argc, argv, options.previous_session_id);

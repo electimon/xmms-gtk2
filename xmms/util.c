@@ -459,6 +459,24 @@ static void util_menu_delete_popup_data(GtkObject *object,
  * screen.  This means it does not neccesarily pop up at (x,y).
  */
 
+void
+util_menu_position(GtkMenu * menu, gint * x, gint * y,
+				   gboolean * push_in, gpointer data)
+{
+	GtkRequisition requisition;
+	gint screen_width;
+	gint screen_height;
+	struct MenuPos *pos = data;
+
+	gtk_widget_size_request(GTK_WIDGET(menu), &requisition);
+
+	screen_width = gdk_screen_width();
+	screen_height = gdk_screen_height();
+
+	*x = CLAMP(pos->x - 2, 0, MAX(0, screen_width - requisition.width));
+	*y = CLAMP(pos->y - 2, 0, MAX(0, screen_height - requisition.height));
+}
+
 void util_item_factory_popup_with_data(GtkItemFactory * ifactory,
 				       gpointer data, GtkDestroyNotify destroy,
 				       guint x, guint y,
@@ -466,39 +484,35 @@ void util_item_factory_popup_with_data(GtkItemFactory * ifactory,
 {
 	static GQuark quark_user_menu_pos = 0;
 	struct MenuPos *pos;
-
 	if (!quark_user_menu_pos)
-		quark_user_menu_pos =
-			g_quark_from_static_string("user_menu_pos");
+		quark_user_menu_pos = g_quark_from_static_string("user_menu_pos");
 
 	if (!quark_popup_data)
 		quark_popup_data =
-			g_quark_from_static_string("GtkItemFactory-popup-data");
+		g_quark_from_static_string("GtkItemFactory-popup-data");
 
-	pos = gtk_object_get_data_by_id(GTK_OBJECT(ifactory),
-					quark_user_menu_pos);
-	if (!pos)
-	{
-		pos = g_malloc0(sizeof (struct MenuPos));
+	pos = g_object_get_qdata(G_OBJECT(ifactory), quark_user_menu_pos);
+	if (!pos) {
+		pos = g_new0(struct MenuPos, 1);
 
-		gtk_object_set_data_by_id_full(GTK_OBJECT(ifactory->widget),
-					       quark_user_menu_pos, pos, g_free);
+		g_object_set_qdata_full(G_OBJECT(ifactory->widget),
+								quark_user_menu_pos, pos, g_free);
 	}
 	pos->x = x;
 	pos->y = y;
 
-	if (data != NULL)
-	{
-		gtk_object_set_data_by_id_full(GTK_OBJECT (ifactory),
-					       quark_popup_data,
-					       data, destroy);
-		gtk_signal_connect(GTK_OBJECT(ifactory->widget),
-				   "selection-done",
-				   GTK_SIGNAL_FUNC(util_menu_delete_popup_data),
-				   ifactory);
+
+	if (data != NULL) {
+		g_object_set_qdata_full(G_OBJECT(ifactory),
+								quark_popup_data, data, destroy);
+		g_signal_connect(G_OBJECT(ifactory->widget),
+						 "selection-done",
+				   G_CALLBACK(util_menu_delete_popup_data), ifactory);
 	}
+
 	gtk_menu_popup(GTK_MENU(ifactory->widget), NULL, NULL,
-		       NULL, pos, mouse_button, time);
+				   (GtkMenuPositionFunc) util_menu_position,
+				   pos, mouse_button, time);
 }
 
 void util_item_factory_popup(GtkItemFactory * ifactory, guint x, guint y,
@@ -976,4 +990,23 @@ gchar *str_to_utf8(const gchar * str)
 	/* all else fails, we mask off character codes >= 128,
 	 *      replace with '?' */
 	return str_to_utf8_fallback(str);
+}
+
+int char_height_for_context(PangoContext *context, PangoFontDescription *font_description)
+{
+	int ascent, descent;
+	PangoFontMetrics *metrics = pango_context_get_metrics(context, font_description, NULL);
+	ascent = pango_font_metrics_get_ascent(metrics) / PANGO_SCALE;
+	descent = pango_font_metrics_get_descent(metrics) / PANGO_SCALE;
+	pango_font_metrics_unref(metrics);
+	return ascent + abs(descent);
+}
+
+int char_width_for_context(PangoContext *context, PangoFontDescription *font_description)
+{
+	int width;
+	PangoFontMetrics *metrics = pango_context_get_metrics(context, font_description, NULL);
+	width = pango_font_metrics_get_approximate_char_width(metrics) / PANGO_SCALE;
+	pango_font_metrics_unref(metrics);
+	return width;
 }

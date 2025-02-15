@@ -248,12 +248,11 @@ void playlist_list_button_release_cb(GtkWidget * widget, GdkEventButton * event,
 	pl->pl_auto_drag_up = FALSE;
 }
 
-void playlist_list_draw_string(PlayList_List *pl, PangoFontDescription *font, gint line, gint width, gchar *text)
+void playlist_list_draw_string(PlayList_List *pl, gint line, gint width, gchar *text)
 {
-	PangoLayout *layout = NULL; // surely we dont access a null pointer somehow, right?
+	PangoLayout *layout = gtk_widget_create_pango_layout(playlistwin, text); // surely we dont access a null pointer somehow, right?
 	int len;
 	char *tmp;
-
 	if (cfg.convert_underscore)
 		while ((tmp = strchr(text, '_')) != NULL)
 			*tmp = ' ';
@@ -266,33 +265,25 @@ void playlist_list_draw_string(PlayList_List *pl, PangoFontDescription *font, gi
 				*(tmp++) = *(tmp2++);
 			*tmp = '\0';
 		}
-	len = strlen(text);
-	while (gdk_text_width(gdk_font_from_description(font), text, len) > width && len > 4)
-	{
-		len--;
-		text[len - 3] = '.';
-		text[len - 2] = '.';
-		text[len - 1] = '.';
-		text[len] = '\0';
-	}
-	layout = gtk_widget_create_pango_layout(playlistwin, text);
-
+	pango_layout_set_width(layout, width*PANGO_SCALE);
+	pango_layout_set_ellipsize(layout, PANGO_ELLIPSIZE_END);
 	pango_layout_set_font_description(layout, playlist_list_font);
 	gdk_draw_layout(pl->pl_widget.parent, pl->pl_widget.gc,
 					pl->pl_widget.x,
-					pl->pl_widget.y, layout);
-
+					pl->pl_widget.y + (line * pl->pl_fheight), layout);
 	g_object_unref(layout);
 }
 
 void playlist_list_draw(Widget * w)
 {
 	PlayList_List *pl = (PlayList_List *) w;
+	PangoContext *context = gtk_widget_get_pango_context(playlistwin);
 	GList *list;
 	GdkGC *gc;
 	GdkPixmap *obj;
 	int width, height;
-	char *text, *title;
+	char *text;
+	const char *title;
 	int i, tw, max_first;
 
 	gc = pl->pl_widget.gc;
@@ -305,7 +296,7 @@ void playlist_list_draw(Widget * w)
 	gdk_draw_rectangle(obj, gc, TRUE, pl->pl_widget.x, pl->pl_widget.y,
 			   width, height);
 
-	if (gdk_font_from_description(playlist_list_font) == NULL)
+	if (gdk_font_from_description(playlist_list_font) == NULL) // dunno what else to use to check it tbh
 	{
 		g_log(NULL, G_LOG_LEVEL_CRITICAL,
 		      "Couldn't open playlist font");
@@ -315,7 +306,7 @@ void playlist_list_draw(Widget * w)
 
 	PL_LOCK();
 	list = get_playlist();
-	pl->pl_fheight = gdk_font_from_description(playlist_list_font)->ascent + gdk_font_from_description(playlist_list_font)->descent + 1;
+	pl->pl_fheight = char_height_for_context(context, playlist_list_font);
 	pl->pl_num_visible = height / pl->pl_fheight;
 
 	max_first = g_list_length(list) - pl->pl_num_visible;
@@ -366,20 +357,21 @@ void playlist_list_draw(Widget * w)
 
 		if (pos != -1 || entry->length != -1)
 		{
+			PangoLayout *layout;
 			int x, y;
 			char tail[60];
 
 			sprintf(tail, "%s%s", qstr, length);
 			x = pl->pl_widget.x + width -
-				gdk_text_width(gdk_font_from_description(playlist_list_font),
-					       tail, strlen(tail)) - 2;
+				char_width_for_context(context, playlist_list_font) * strlen(tail) - 10;
 			y = pl->pl_widget.y +
-				(i - pl->pl_first) * pl->pl_fheight +
-				gdk_font_from_description(playlist_list_font)->ascent;
-			gdk_draw_text(obj, gdk_font_from_description(playlist_list_font), gc, x, y,
-				      tail, strlen(tail));
-			tw = width - gdk_text_width(gdk_font_from_description(playlist_list_font),
-						    tail, strlen(tail)) - 5;
+				(i - pl->pl_first) * pl->pl_fheight;
+			layout = gtk_widget_create_pango_layout(playlistwin, tail);
+			pango_layout_set_width(layout, width*PANGO_SCALE);
+			pango_layout_set_font_description(layout, playlist_list_font);
+			gdk_draw_layout(obj, gc, x, y, layout);
+			g_object_unref(layout);
+			tw = width - char_width_for_context(context, playlist_list_font) * strlen(tail) - 15;
 		}
 		else
 			tw = width;
@@ -389,8 +381,7 @@ void playlist_list_draw(Widget * w)
 		else
 			text = g_strdup_printf("%s", title);
 
-		playlist_list_draw_string(pl, playlist_list_font,
-					  i - pl->pl_first, tw, text);
+		playlist_list_draw_string(pl, i - pl->pl_first, tw, text);
 		g_free(text);
 	}
 	PL_UNLOCK();

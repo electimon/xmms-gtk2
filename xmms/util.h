@@ -41,7 +41,11 @@ void util_set_cursor(GtkWidget *window);
 void util_dump_menu_rc(void);
 void util_read_menu_rc(void);
 void util_dialog_keypress_cb(GtkWidget *w, GdkEventKey *event, gpointer data);
-
+gchar *filename_to_utf8(const gchar * filename);
+gchar *str_to_utf8(const gchar * str);
+gchar *str_to_utf8_fallback(const gchar * str);
+int char_height_for_context(PangoContext *context, PangoFontDescription *font_description);
+int char_width_for_context(PangoContext *context, PangoFontDescription *font_description);
 #if ENABLE_NLS
     gchar* util_menu_translate(const gchar *path, gpointer func_data);
 #else

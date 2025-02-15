@@ -21,6 +21,7 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
+#include <gdk/gdkdrawable.h>
 #include <X11/Xlib.h>
 
 #include <sys/time.h>

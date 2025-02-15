@@ -282,7 +282,7 @@ static void __playlist_ins_with_info(char *filename, long pos, char* title, int 
 	entry = g_malloc0(sizeof (PlaylistEntry));
 	entry->filename = g_strdup(filename);
 	if (title)
-		entry->title = g_strdup(title);
+		entry->title = g_strdup(str_to_utf8(title));
 	entry->length = len;
 
 	PL_LOCK();
