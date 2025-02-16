@@ -24,7 +24,7 @@
 
 #include "config.h"
 
-#include <gtk/gtk.h>
+#include "xmms/gtk.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>

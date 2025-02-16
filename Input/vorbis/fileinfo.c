@@ -28,7 +28,7 @@
 #include <string.h>
 #include <pthread.h>
 #include <glib.h>
-#include <gtk/gtk.h>
+#include "xmms/gtk.h"
 #include <gdk/gdkkeysyms.h>
 #include <ogg/ogg.h>
 #include <vorbis/codec.h>

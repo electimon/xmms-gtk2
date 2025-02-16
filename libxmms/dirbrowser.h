@@ -19,7 +19,7 @@
  */
 #ifndef XMMS_DIRBROWSER_H
 #define XMMS_DIRBROWSER_H
-#include <gtk/gtk.h>
+#include "xmms/gtk.h"
 
 #ifdef __cplusplus
 extern "C" {

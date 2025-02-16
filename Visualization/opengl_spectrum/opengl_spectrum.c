@@ -27,7 +27,7 @@
 
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
-#include <gtk/gtk.h>
+#include "xmms/gtk.h"
 #include <math.h>
 
 #include <GL/gl.h>

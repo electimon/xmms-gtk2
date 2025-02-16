@@ -22,7 +22,7 @@
 
 #include "config.h"
 
-#include <gtk/gtk.h>
+#include "libxmms/gtk.h"
 
 #include <sys/types.h>
 #include <sys/ioctl.h>

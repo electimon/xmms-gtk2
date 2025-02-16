@@ -1,6 +1,6 @@
 #ifndef XMMS_UTIL_H
 #define XMMS_UTIL_H
-#include <gtk/gtk.h>
+#include "gtk.h"
 
 #ifdef __cplusplus
 extern "C" {

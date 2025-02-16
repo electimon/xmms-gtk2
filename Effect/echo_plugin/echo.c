@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <gtk/gtk.h>
+#include "libxmms/gtk.h"
 #include "libxmms/configfile.h"
 #include "echo.h"
 #include "xmms/i18n.h"

@@ -18,7 +18,7 @@
 #ifndef SUN_H
 #define SUN_H
 
-#include <gtk/gtk.h>
+#include "xmms/gtk.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>

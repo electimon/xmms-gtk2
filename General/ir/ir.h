@@ -29,7 +29,7 @@
 
 /* XMMS-required includes (glib, threads) */
 #include <glib.h>
-#include <gtk/gtk.h>
+#include "xmms/gtk.h"
 #include <pthread.h>
 #include "xmms/plugin.h"
 #include "../../libxmms/xmmsctrl.h"

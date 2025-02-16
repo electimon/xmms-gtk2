@@ -38,11 +38,11 @@
 #include <string.h>
 #include <pthread.h>
 #include <glib.h>
-#include <gtk/gtk.h>
 #include <ogg/ogg.h>
 #include <vorbis/codec.h>
 #include <vorbis/vorbisfile.h>
 
+#include "xmms/gtk.h"
 #include "xmms/plugin.h"
 #include "libxmms/util.h"
 #include "libxmms/configfile.h"

@@ -25,7 +25,7 @@
 #ifndef _XMMS_FULLSCREEN_H
 #define _XMMS_FULLSCREEN_H 1
 
-#include <gtk/gtk.h>
+#include "xmms/gtk.h"
 #include <gdk/gdkx.h>
 
 typedef struct {

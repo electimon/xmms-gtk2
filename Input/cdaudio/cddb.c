@@ -23,7 +23,7 @@
 #include "cdaudio.h"
 #include "cdinfo.h"
 #include <libxmms/util.h>
-#include <gtk/gtk.h>
+#include "xmms/gtk.h"
 #include <stdarg.h>
 #include <dirent.h>
 #include <pthread.h>

@@ -15,7 +15,7 @@
  */
 
 #include "esdout.h"
-#include <gtk/gtk.h>
+#include "xmms/gtk.h"
 #include "xmms/i18n.h"
 
 void esdout_about(void)

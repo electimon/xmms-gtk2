@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <glib.h>
-#include <gtk/gtk.h>
+#include "xmms/gtk.h"
 #include <pthread.h>
 
 #include "vorbis.h"

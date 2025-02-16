@@ -1,7 +1,7 @@
 #include "config.h"
 
 #include "xmms/i18n.h"
-#include <gtk/gtk.h>
+#include "xmms/gtk.h"
 #include <sys/types.h>
 #include <sys/wait.h>
 

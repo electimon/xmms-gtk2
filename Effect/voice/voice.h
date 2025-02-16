@@ -11,8 +11,8 @@
 #include <stdio.h>
 
 #include <glib.h>
-#include <gtk/gtk.h>
 
+#include "xmms/gtk.h"
 #include "xmms/plugin.h"
 
 extern EffectPlugin voice_ep;

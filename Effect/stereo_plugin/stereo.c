@@ -2,7 +2,7 @@
 
 #include "xmms/i18n.h"
 #include <xmms/plugin.h>
-#include <gtk/gtk.h>
+#include "xmms/gtk.h"
 #include "libxmms/util.h"
 #include "libxmms/configfile.h"
 

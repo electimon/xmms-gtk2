@@ -18,7 +18,7 @@
  */
 #include "config.h"
 
-#include <gtk/gtk.h>
+#include "xmms/gtk.h"
 #include <string.h>
 #include "xmms/plugin.h"
 #include "libxmms/util.h"

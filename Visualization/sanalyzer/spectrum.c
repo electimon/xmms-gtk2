@@ -17,7 +17,7 @@
  */
 #include "config.h"
 
-#include <gtk/gtk.h>
+#include "xmms/gtk.h"
 #include <math.h>
 
 #include "xmms/plugin.h"

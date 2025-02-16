@@ -33,7 +33,7 @@
 #include <alsa/asoundlib.h>
 #include <alsa/pcm_plugin.h>
 
-#include <gtk/gtk.h>
+#include "xmms/gtk.h"
 
 #ifdef WORDS_BIGENDIAN
 # define IS_BIG_ENDIAN TRUE

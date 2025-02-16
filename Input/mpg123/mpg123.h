@@ -25,7 +25,7 @@ enum {
 	DETECT_BOTH
 };
 
-#include <gtk/gtk.h>
+#include "xmms/gtk.h"
 
 #include "xmms/plugin.h"
 #include "libxmms/util.h"

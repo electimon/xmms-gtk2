@@ -26,7 +26,7 @@
 #include "libxmms/configfile.h"
 #include "libxmms/util.h"
 #include "libxmms/titlestring.h"
-#include <gtk/gtk.h>
+#include "xmms/gtk.h"
 
 #include "mikmod.xpm"
 

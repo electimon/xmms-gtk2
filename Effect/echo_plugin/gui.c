@@ -1,5 +1,5 @@
 #include "xmms/i18n.h"
-#include <gtk/gtk.h>
+#include "libxmms/gtk.h"
 #include "libxmms/util.h"
 #include "libxmms/configfile.h"
 #include "echo.h"

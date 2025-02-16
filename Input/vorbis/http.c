@@ -23,7 +23,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <glib.h>
-#include <gtk/gtk.h>
+#include "xmms/gtk.h"
 #include <string.h>
 #include <fcntl.h>
 #include <unistd.h>

@@ -22,7 +22,7 @@
 #include "xmms/i18n.h"
 #include "esdout.h"
 #include "libxmms/configfile.h"
-#include <gtk/gtk.h>
+#include "xmms/gtk.h"
 
 static GtkWidget *configure_win;
 static GtkWidget *server_use_remote, *server_oss_mixer, *server_host_entry;

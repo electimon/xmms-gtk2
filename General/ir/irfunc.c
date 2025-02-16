@@ -150,7 +150,7 @@ unsigned char *ir_text_to_code(char *text)
 	for (; i < ircfg.codelen; i++)
 		code[i] = '\0';
 
-	return code;
+	return (u_char*)code;
 }
 
 /* this function should never be called, but maybe someone wants to manually

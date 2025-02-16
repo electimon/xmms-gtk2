@@ -1,6 +1,6 @@
 #include "config.h"
 
-#include <gtk/gtk.h>
+#include "xmms/gtk.h"
 
 #include "libxmms/configfile.h"
 #include "opengl_spectrum.h"

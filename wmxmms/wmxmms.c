@@ -16,7 +16,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-#include <gtk/gtk.h>
+#include "xmms/gtk.h"
 #include <gdk/gdkx.h>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -557,7 +557,7 @@ void drag_data_received(GtkWidget *widget, GdkDragContext *context,
 {
 	if (selection_data->data)
 	{
-		char *url = selection_data->data;
+		char *url = (char*)selection_data->data;
 		xmms_remote_playlist_clear(xmms_session);
 		xmms_remote_playlist_add_url_string(xmms_session, url);
 		xmms_remote_play(xmms_session);

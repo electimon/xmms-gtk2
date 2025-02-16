@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <pthread.h>
-#include <gtk/gtk.h>
+#include "xmms/gtk.h"
 #include "xmms/plugin.h"
 #include <mikmod.h>
 

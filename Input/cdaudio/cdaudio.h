@@ -32,7 +32,7 @@
 #include <sys/ioctl.h>
 
 #include <glib.h>
-#include <gtk/gtk.h>
+#include "xmms/gtk.h"
 #include "xmms/plugin.h"
 #include "libxmms/configfile.h"
 
