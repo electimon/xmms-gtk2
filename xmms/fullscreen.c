@@ -71,7 +71,7 @@ void xmms_fullscreen_modelist_free(GSList * modes)
 #else /* XF86VIDMODE */
 
 #include <X11/extensions/xf86vmode.h>
-#include <X11/extensions/xf86vmstr.h>
+#include <X11/extensions/xf86vmproto.h>
 
 gboolean xmms_fullscreen_available(Display * dpy)
 {

@@ -47,8 +47,8 @@ extern "C" {
 #endif
 
 ConfigFile *xmms_cfg_new(void);
-ConfigFile *xmms_cfg_open_file(gchar * filename);
-gboolean xmms_cfg_write_file(ConfigFile * cfg, gchar * filename);
+ConfigFile *xmms_cfg_open_file(const gchar * filename);
+gboolean xmms_cfg_write_file(ConfigFile * cfg, const gchar * filename);
 void xmms_cfg_free(ConfigFile * cfg);
 ConfigFile *xmms_cfg_open_default_file(void);
 gboolean xmms_cfg_write_default_file(ConfigFile * cfg);

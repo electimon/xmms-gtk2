@@ -67,12 +67,12 @@ gchar *general_stringify_enabled_list(void)
 
 	if (g_list_length(node))
 	{
-		enalist = g_strdup(g_basename(((GeneralPlugin *) node->data)->filename));
+		enalist = g_path_get_basename(((GeneralPlugin *) node->data)->filename);
 		node = node->next;
 		while (node)
 		{
 			temp = enalist;
-			temp2 = g_strdup(g_basename(((GeneralPlugin *) node->data)->filename));
+			temp2 = g_path_get_basename(((GeneralPlugin *) node->data)->filename);
 			enalist = g_strconcat(temp, ",", temp2, NULL);
 			g_free(temp);
 			g_free(temp2);
@@ -97,7 +97,7 @@ void general_enable_from_stringified_list(gchar * list)
 		node = gp_data->general_list;
 		while (node)
 		{
-			base = g_basename(((GeneralPlugin *) node->data)->filename);
+			base = g_path_get_basename(((GeneralPlugin *) node->data)->filename);
 			if (!strcmp(plugins[i], base))
 			{
 				gp = node->data;
@@ -106,6 +106,7 @@ void general_enable_from_stringified_list(gchar * list)
 					gp->init();
 			}
 			node = node->next;
+			g_free(base);
 		}
 	}
 	g_strfreev(plugins);

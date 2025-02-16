@@ -366,7 +366,7 @@ void input_get_song_info(gchar * filename, gchar ** title, gint * length)
 		ext = strrchr(temp, '.');
 		if (ext)
 			*ext = '\0';
-		input->file_name = g_basename(temp);
+		input->file_name = g_path_get_basename(temp);
 		input->file_ext = ext ? ext+1 : NULL;
 		input->file_path = temp;
 
@@ -377,6 +377,7 @@ void input_get_song_info(gchar * filename, gchar ** title, gint * length)
 		(*length) = -1;
 		g_free(temp);
 		g_free(input);
+		g_free(input->file_name); // thanks glib :(
 	}
 }
 
@@ -390,7 +391,9 @@ static void input_general_file_info_box(char *filename, InputPlugin *ip)
 		
 	window = gtk_window_new(GTK_WINDOW_POPUP);
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, FALSE);
-	title = g_strdup_printf(_("File Info - %s"), g_basename(filename));
+	gchar *basename = g_path_get_basename(filename);
+	title = g_strdup_printf(_("File Info - %s"), basename);
+	g_free(basename);
 	gtk_window_set_title(GTK_WINDOW(window), title);
 	g_free(title);
 	gtk_container_set_border_width(GTK_CONTAINER(window), 10);

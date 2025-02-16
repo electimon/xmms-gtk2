@@ -1026,7 +1026,7 @@ char *playlist_get_info_text(void)
 	if (playlist_position->title)
 		title = playlist_position->title;
 	else
-		title = g_basename(playlist_position->filename);
+		title = g_path_get_basename(playlist_position->filename);
 
 	/*
 	 * If the user don't want numbers in the playlist, don't
@@ -1048,6 +1048,8 @@ char *playlist_get_info_text(void)
 	text = g_strdup_printf("%s%s%s", numbers, title, length);
 	g_free(numbers);
 	g_free(length);
+	if (!playlist_position->title)
+		g_free(title);
 
 	PL_UNLOCK();
 
@@ -1079,7 +1081,7 @@ int playlist_get_current_length(void)
 	return retval;
 }
 
-gboolean playlist_save(char *filename, gboolean is_pls)
+gboolean playlist_save(const char *filename, gboolean is_pls)
 {
 	GList *node;
 	FILE *file;
@@ -1408,7 +1410,7 @@ char * playlist_get_songtitle(int pos)
 	}
 
 	if (title == NULL)
-		title = g_strdup(g_basename(filename));
+		title = g_path_get_basename(filename);
 
 	g_free(filename);
 
@@ -1774,7 +1776,6 @@ static void __playlist_generate_shuffle_list(void)
 	/* Caller should hold playlist mutex */
 
 	GList *node;
-	int numsongs;
 
 	if (shuffle_list)
 	{
@@ -1786,7 +1787,6 @@ static void __playlist_generate_shuffle_list(void)
 		return;
 	
 	shuffle_list = playlist_shuffle_list(g_list_copy(playlist));
-	numsongs = g_list_length(shuffle_list);
 
 	if (playlist_position)
 	{

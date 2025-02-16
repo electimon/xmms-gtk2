@@ -155,19 +155,21 @@ gboolean effect_enabled(int i)
 
 gchar *effect_stringify_enabled_list(void)
 {
-	char *enalist = NULL, *temp;
+	char *enalist = NULL, *temp, *base;
 	GList *node = ep_data->enabled_list;
 
 	if (g_list_length(node))
 	{
 		EffectPlugin *ep = node->data;
-		enalist = g_strdup(g_basename(ep->filename));
+		enalist = g_path_get_basename(ep->filename);
 		node = node->next;
 		while (node)
 		{
 			temp = enalist;
 			ep = node->data;
-			enalist = g_strconcat(temp, ",", g_basename(ep->filename), NULL);
+			base = g_path_get_basename(ep->filename);
+			enalist = g_strconcat(temp, ",", base, NULL);
+			g_free(base);
 			g_free(temp);
 			node = node->next;
 		}
@@ -190,7 +192,7 @@ void effect_enable_from_stringified_list(char * list)
 		while (node)
 		{
 			EffectPlugin *ep = node->data;
-			base = g_basename(ep->filename);
+			base = g_path_get_basename(ep->filename);
 			if (!strcmp(plugins[i], base))
 			{
 				ep_data->enabled_list = g_list_append(ep_data->enabled_list, ep);
@@ -198,6 +200,7 @@ void effect_enable_from_stringified_list(char * list)
 					ep->init();
 			}
 			node = node->next;
+			g_free(base);
 		}
 	}
 	g_strfreev(plugins);

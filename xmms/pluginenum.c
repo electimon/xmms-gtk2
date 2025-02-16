@@ -178,30 +178,36 @@ void init_plugins(void)
 	node = op_data->output_list;
 	while (node)
 	{
+		gchar *base, *base2;
 		OutputPlugin *op = node->data;
 		/*
 		 * Only test basename to avoid problems when changing
 		 * prefix.  We will only see one plugin with the same
 		 * basename, so this is usually what the user want.
 		 */
-		if (!strcmp(g_basename(cfg.outputplugin),
-			    g_basename(op->filename)))
+		base = g_path_get_basename(cfg.outputplugin);
+		base2 = g_path_get_basename(op->filename);
+		if (!strcmp(base,
+			    base2))
 			op_data->current_output_plugin = op;
 		if (op->init)
 			op->init();
 		node = node->next;
+		g_free(base);
+		g_free(base2);
 	}
 
 	node = ip_data->input_list;
 	while (node)
 	{
 		InputPlugin *ip = node->data;
-		temp = g_basename(ip->filename);
+		temp = g_path_get_basename(ip->filename);
 		if (g_list_find_custom(disabled_iplugin_names, temp, d_iplist_compare))
 			disabled_iplugins = g_list_append(disabled_iplugins, ip);
 		if (ip->init)
 			ip->init();
 		node = node->next;
+		g_free(temp);
 	}
 
 	node = disabled_iplugin_names;
@@ -269,40 +275,77 @@ static void dynamic_lib_error(void)
 static int plugin_check_duplicate(char *filename)
 {
 	GList *l;
-	char *base_filename = g_basename(filename);
+	gchar *base_filename = g_path_get_basename(filename);
+	gchar *temp;
+
 	/*
 	 * erg.. gotta check 'em all, surely there's a better way
 	 *                                                 - Zinx
 	 */
 
 	for (l = ip_data->input_list; l; l = l->next)
-		if (!strcmp(base_filename,
-			    g_basename(((InputPlugin*)l->data)->filename)))
+	{
+		temp = g_path_get_basename(((InputPlugin*)l->data)->filename);
+		if (!strcmp(base_filename, temp))
+		{
+			g_free(temp);
+			g_free(base_filename);
 			return 1;
+		}
+		g_free(temp);
+	}
 
 	for (l = op_data->output_list; l; l = l->next)
-		if (!strcmp(base_filename,
-			    g_basename(((OutputPlugin*)l->data)->filename)))
+	{
+		temp = g_path_get_basename(((OutputPlugin*)l->data)->filename);
+		if (!strcmp(base_filename, temp))
+		{
+			g_free(temp);
+			g_free(base_filename);
 			return 1;
+		}
+		g_free(temp);
+	}
 
 	for (l = ep_data->effect_list; l; l = l->next)
-		if (!strcmp(base_filename,
-			    g_basename(((EffectPlugin*)l->data)->filename)))
+	{
+		temp = g_path_get_basename(((EffectPlugin*)l->data)->filename);
+		if (!strcmp(base_filename, temp))
+		{
+			g_free(temp);
+			g_free(base_filename);
 			return 1;
+		}
+		g_free(temp);
+	}
 
 	for (l = gp_data->general_list; l; l = l->next)
-		if (!strcmp(base_filename,
-			    g_basename(((GeneralPlugin*)l->data)->filename)))
+	{
+		temp = g_path_get_basename(((GeneralPlugin*)l->data)->filename);
+		if (!strcmp(base_filename, temp))
+		{
+			g_free(temp);
+			g_free(base_filename);
 			return 1;
+		}
+		g_free(temp);
+	}
 
 	for (l = vp_data->vis_list; l; l = l->next)
-		if (!strcmp(base_filename,
-			    g_basename(((VisPlugin*)l->data)->filename)))
+	{
+		temp = g_path_get_basename(((VisPlugin*)l->data)->filename);
+		if (!strcmp(base_filename, temp))
+		{
+			g_free(temp);
+			g_free(base_filename);
 			return 1;
+		}
+		g_free(temp);
+	}
 
+	g_free(base_filename);
 	return 0;
 }
-
 
 void add_plugin(char * filename)
 {
@@ -404,7 +447,7 @@ void cleanup_plugins(void)
 		{
 			ip->cleanup();
 			GDK_THREADS_LEAVE();
-			while(g_main_iteration(FALSE));
+			while(g_main_context_iteration(g_main_context_default(), FALSE));
 			GDK_THREADS_ENTER();
 		}
 		g_free(ip->filename);
@@ -433,7 +476,7 @@ void cleanup_plugins(void)
 		{
 			ep->cleanup();
 			GDK_THREADS_LEAVE();
-			while(g_main_iteration(FALSE));
+			while(g_main_context_iteration(g_main_context_default(), FALSE));
 			GDK_THREADS_ENTER();
 		}
 		g_free(ep->filename);
@@ -454,7 +497,7 @@ void cleanup_plugins(void)
 	g_list_free(gp_data->enabled_list);
 
 	GDK_THREADS_LEAVE();
-	while(g_main_iteration(FALSE));
+	while(g_main_context_iteration(g_main_context_default(), FALSE));
 	GDK_THREADS_ENTER();
 	
 	node = gp_data->general_list;
@@ -479,7 +522,7 @@ void cleanup_plugins(void)
 	g_list_free(vp_data->enabled_list);
 	
 	GDK_THREADS_LEAVE();
-	while(g_main_iteration(FALSE));
+	while(g_main_context_iteration(g_main_context_default(), FALSE));
 	GDK_THREADS_ENTER();
 	
 	node = vp_data->vis_list;

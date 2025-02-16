@@ -18,7 +18,7 @@
 #ifndef XMMS_H
 #define XMMS_H
 
-#include <gtk/gtk.h>
+#include "gtk.h"
 #include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
 #include <gdk/gdkdrawable.h>

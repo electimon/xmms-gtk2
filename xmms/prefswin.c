@@ -1195,7 +1195,9 @@ void prefswin_output_cb(GtkWidget * w, gpointer item)
 
 void gen_module_description(gchar * file, gchar * desc, gchar ** full_desc)
 {
-	(*full_desc) = g_strdup_printf("%s   [%s]", desc, g_basename(file));
+	char *base = g_path_get_basename(file);
+	(*full_desc) = g_strdup_printf("%s   [%s]", desc, base);
+	g_free(base);
 }
 
 void add_output_plugins(GtkOptionMenu *omenu)
@@ -1392,7 +1394,7 @@ void show_prefs_window(void)
 	gtk_widget_grab_default(prefswin_ok);
 
 	GDK_THREADS_LEAVE();
-	while(g_main_iteration(FALSE));
+	while(g_main_context_iteration(g_main_context_default(), FALSE));
 	GDK_THREADS_ENTER();
 
 	is_opening = FALSE;

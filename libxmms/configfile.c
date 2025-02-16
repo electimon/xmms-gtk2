@@ -43,7 +43,7 @@ ConfigFile *xmms_cfg_new(void)
 	return cfg;
 }
 
-ConfigFile *xmms_cfg_open_file(gchar * filename)
+ConfigFile *xmms_cfg_open_file(const gchar * filename)
 {
 	ConfigFile *cfg;
 
@@ -117,7 +117,7 @@ ConfigFile * xmms_cfg_open_default_file(void)
 	return ret;
 }
 
-gboolean xmms_cfg_write_file(ConfigFile * cfg, gchar * filename)
+gboolean xmms_cfg_write_file(ConfigFile * cfg, const gchar * filename)
 {
 	FILE *file;
 	GList *section_list, *line_list;

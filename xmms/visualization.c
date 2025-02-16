@@ -133,12 +133,12 @@ gchar *vis_stringify_enabled_list(void)
 
 	if (g_list_length(node))
 	{
-		enalist = g_strdup(g_basename(((VisPlugin *) node->data)->filename));
+		enalist = g_path_get_basename(((VisPlugin *) node->data)->filename);
 		node = node->next;
 		while (node)
 		{
 			temp = enalist;
-			temp2 = g_strdup(g_basename(((VisPlugin *) node->data)->filename));
+			temp2 = g_path_get_basename(((VisPlugin *) node->data)->filename);
 			enalist = g_strconcat(temp, ",", temp2, NULL);
 			g_free(temp);
 			g_free(temp2);
@@ -163,7 +163,7 @@ void vis_enable_from_stringified_list(gchar * list)
 		node = vp_data->vis_list;
  		while (node)
 		{
-			base = g_basename(((VisPlugin *) node->data)->filename);
+			base = g_path_get_basename(((VisPlugin *) node->data)->filename);
 			if (!strcmp(plugins[i], base))
 			{
 				vp = node->data;
@@ -174,6 +174,7 @@ void vis_enable_from_stringified_list(gchar * list)
 					vp->playback_start();
 			}
 			node = node->next;
+			g_free(base);
 		}
 	}
 	g_strfreev(plugins);
@@ -260,7 +261,7 @@ void vis_send_data(gint16 pcm_data[2][512], int nch, int length)
 	gboolean mono_freq_calced = FALSE, stereo_freq_calced = FALSE;
 	gint16 mono_pcm[2][512], stereo_pcm[2][512];
 	gboolean mono_pcm_calced = FALSE, stereo_pcm_calced = FALSE;
-	gint8 intern_vis_data[512];
+	guchar intern_vis_data[512];
 	gint i;
 
 	if (!pcm_data || nch < 1)

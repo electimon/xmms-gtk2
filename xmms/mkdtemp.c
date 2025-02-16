@@ -114,7 +114,7 @@ char * mkdtemp(char *path)
 		for (trv = start;;) {
 			if (*trv == '\0' || trv == suffp)
 				return NULL;
-			pad = strchr(padchar, *trv);
+			pad = strchr((char*)padchar, *trv);
 			if (pad == NULL || !*++pad)
 				*trv++ = padchar[0];
 			else {

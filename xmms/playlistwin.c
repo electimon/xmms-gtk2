@@ -57,7 +57,7 @@ struct overwrite_data {
 	char *filename;
 	int pls;
 	GtkWidget *fsel;
-};
+}; // please use free_overwrite_data to free this structure, as in its only creation filename is an allocated member.
 
 extern TButton *mainwin_pl;
 
@@ -188,6 +188,12 @@ GtkItemFactoryEntry playlistwin_popup_menu_entries[] =
 static const int playlistwin_popup_menu_entries_num =
 	sizeof(playlistwin_popup_menu_entries) /
 	sizeof(playlistwin_popup_menu_entries[0]);
+
+static void free_overwrite_data(struct overwrite_data *data)
+{
+	g_free(data->filename);
+	g_free(data);
+}
 
 static void playlistwin_update_info(void)
 {
@@ -595,18 +601,16 @@ static void playlistwin_show_filebrowser(void)
 
 static void playlistwin_url_ok_clicked(GtkWidget * w, GtkWidget * entry)
 {
-	char *text, *temp;
+	char *text;
 
-	text = gtk_entry_get_text(GTK_ENTRY(entry));
+	text = g_strdup(gtk_entry_get_text(GTK_ENTRY(entry)));
 	if (text && *text)
 	{
 		g_strstrip(text);
 		if(strstr(text, ":/") == NULL && text[0] != '/')
-			temp = g_strconcat("http://", text, NULL);
-		else
-			temp = g_strdup(text);
-		playlist_add_url_string(temp);
-		g_free(temp);
+			text = g_strconcat("http://", text, NULL);
+		playlist_add_url_string(text);
+		g_free(text);
 	}
 	gtk_widget_destroy(playlistwin_url_window);
 }
@@ -709,7 +713,7 @@ static void playlistwin_set_sensitive_sortmenu(void)
 	gtk_widget_set_sensitive(w, set);
 }
 
-static void playlistwin_save_playlist_error(char* path, GtkWidget *filesel)
+static void playlistwin_save_playlist_error(const char* path, GtkWidget *filesel)
 {
 	GtkWidget *dialog, *label, *bbox, *close;
 	char *text;
@@ -749,18 +753,19 @@ static void playlistwin_check_overwrite_cb(GtkButton *w, gpointer user_data)
 	else
 	{
 		gtk_widget_hide(odata->fsel);
-		g_free(user_data);
+		g_free(odata->filename);
+		g_free(odata);
 	}
 }
 
-static void playlistwin_check_overwrite(GtkWidget *filesel, char *filename, int pls)
+static void playlistwin_check_overwrite(GtkWidget *filesel, const char *filename, int pls)
 {
 	GtkWidget *dialog, *label, *bbox, *overwrite, *cancel;
 	char *text;
 	struct overwrite_data *data;
 
 	data = g_malloc0(sizeof (*data));
-	data->filename = filename;
+	data->filename = g_strdup(filename);
 	data->pls = pls;
 	data->fsel = filesel;
 
@@ -790,7 +795,7 @@ static void playlistwin_check_overwrite(GtkWidget *filesel, char *filename, int 
 	gtk_box_pack_start(GTK_BOX(bbox), overwrite, FALSE, FALSE, 0);
 	cancel = gtk_button_new_with_label(_("Cancel"));
 	gtk_signal_connect_object(GTK_OBJECT(cancel), "clicked",
-				  GTK_SIGNAL_FUNC(g_free),
+				  GTK_SIGNAL_FUNC(free_overwrite_data),
 				  (GtkObject*) data);
 	gtk_signal_connect_object(GTK_OBJECT(cancel), "clicked",
 				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
@@ -804,7 +809,7 @@ static void playlistwin_check_overwrite(GtkWidget *filesel, char *filename, int 
 
 static void playlistwin_save_filesel_ok(GtkWidget * w, GtkFileSelection * filesel)
 {
-	char *filename, *slash;
+	const char *filename, *slash;
 	struct stat statd;
 	int len;
 	gboolean pls = FALSE;
@@ -1884,10 +1889,10 @@ static void playlistwin_drag_data_received(GtkWidget * widget,
 			pos = ((y - ((Widget *) playlistwin_list)->y) / playlistwin_list->pl_fheight) + playlistwin_list->pl_first;
 			if (pos > get_playlist_length())
 				pos = get_playlist_length();
-			playlist_ins_url_string(selection_data->data, pos);
+			playlist_ins_url_string((gchar*)selection_data->data, pos);
 		}
 		else
-			playlist_add_url_string(selection_data->data);
+			playlist_add_url_string((gchar*)selection_data->data);
 	}
 }
 
@@ -1932,7 +1937,7 @@ static void selection_received(GtkWidget *widget, GtkSelectionData *selection_da
 {
 	if (selection_data->type == GDK_SELECTION_TYPE_STRING &&
 	    selection_data->length > 0)
-		playlist_add_url_string(selection_data->data);
+		playlist_add_url_string((gchar*)selection_data->data);
 }
 
 static void playlistwin_create_gtk(void)

@@ -222,7 +222,7 @@ void *ctrlsocket_func(void *arg)
 	gint fd, b, i;
 	guint32 v[2], info[3];
 	PacketNode *pkt;
-	gint len;
+	socklen_t len;
 	gfloat fval[11];
 
 	pthread_mutex_lock(&start_mutex);
@@ -289,12 +289,12 @@ void *ctrlsocket_func(void *arg)
 				break;
 			}
 			case CMD_GET_VOLUME:
-				input_get_volume(&v[0], &v[1]);
+				input_get_volume((int*)&v[0], (int*)&v[1]);
 				ctrl_write_packet(pkt->fd, v, sizeof (v));
 				ctrl_ack_packet(pkt);
 				break;
 			case CMD_GET_BALANCE:
-				input_get_volume(&v[0], &v[1]);
+				input_get_volume((int*)&v[0], (int*)&v[1]);
 				if (v[0] > v[1])
 					b = -100 + ((v[1] * 100) / v[0]);
 				else if (v[1] > v[0])

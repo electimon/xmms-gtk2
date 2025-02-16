@@ -164,11 +164,6 @@ static void textbox_generate_xfont_pixmap(TextBox * tb, gchar *pixmaptext)
 {
 	PangoLayout *layout = gtk_widget_create_pango_layout(mainwin, pixmaptext);
 	int cw = char_width(tb->tb_font_desc);
-	int scrollable_padding = 0;
-
-	if (tb->tb_is_scrollable) {
-		scrollable_padding = 4; // the buffer is *** so lets add 4 for the buffer and start of line
-	}
 
 	tb->tb_pixmap_width = ((cw * strlen(pixmaptext)) - tb->tb_widget.width);
 	if (tb->tb_pixmap_width < tb->tb_widget.width)

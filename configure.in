@@ -509,7 +509,7 @@ AC_CHECK_SIZEOF([long])
 
 if test -n "$GCC"
 then
-  CFLAGS="$CFLAGS -Wall -Wpointer-arith -finline-functions"
+  CFLAGS="$CFLAGS -Wall -Werror -Wno-unused-result -Wpointer-arith -finline-functions"
   case "$CFLAGS" in
     -g*) ;;
     *\ -g*) ;;

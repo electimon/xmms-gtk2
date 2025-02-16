@@ -63,7 +63,7 @@ gint get_playlist_position(void);
 gint __get_playlist_position(void);
 gchar *playlist_get_info_text(void);
 int playlist_get_current_length(void);
-gboolean playlist_save(char *filename, gboolean is_pls);
+gboolean playlist_save(const gchar *filename, gboolean is_pls);
 gboolean playlist_load(gchar * filename);
 GList *get_playlist(void);
 GList *get_queue(void);

@@ -251,7 +251,6 @@ void playlist_list_button_release_cb(GtkWidget * widget, GdkEventButton * event,
 void playlist_list_draw_string(PlayList_List *pl, gint line, gint width, gchar *text)
 {
 	PangoLayout *layout = gtk_widget_create_pango_layout(playlistwin, text); // surely we dont access a null pointer somehow, right?
-	int len;
 	char *tmp;
 	if (cfg.convert_underscore)
 		while ((tmp = strchr(text, '_')) != NULL)
@@ -282,7 +281,7 @@ void playlist_list_draw(Widget * w)
 	GdkPixmap *obj;
 	int width, height;
 	char *text;
-	const char *title;
+	gchar *title;
 	int i, tw, max_first;
 
 	gc = pl->pl_widget.gc;
@@ -342,7 +341,7 @@ void playlist_list_draw(Widget * w)
 		if (entry->title)
 			title = entry->title;
 		else
-			title = g_basename(entry->filename);
+			title = g_path_get_basename(entry->filename);
 
 		pos = playlist_get_queue_position(entry);
 		
@@ -382,6 +381,8 @@ void playlist_list_draw(Widget * w)
 
 		playlist_list_draw_string(pl, i - pl->pl_first, tw, text);
 		g_free(text);
+		if (!entry->title)
+			g_free(title);
 	}
 	PL_UNLOCK();
 }

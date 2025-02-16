@@ -434,7 +434,7 @@ static void read_config(void)
 		xmms_cfg_read_int(cfgfile, "xmms", "playlist_position", &cfg.playlist_position);
 		xmms_cfg_read_int(cfgfile, "xmms", "equalizer_x", &cfg.equalizer_x);
 		xmms_cfg_read_int(cfgfile, "xmms", "equalizer_y", &cfg.equalizer_y);
-		xmms_cfg_read_int(cfgfile, "xmms", "snap_distance", &cfg.snap_distance);
+		xmms_cfg_read_int(cfgfile, "xmms", "snap_distance", (int*)&cfg.snap_distance);
 		xmms_cfg_read_boolean(cfgfile, "xmms", "equalizer_visible", &cfg.equalizer_visible);
 		xmms_cfg_read_boolean(cfgfile, "xmms", "equalizer_active", &cfg.equalizer_active);
 		xmms_cfg_read_boolean(cfgfile, "xmms", "equalizer_shaded", &cfg.equalizer_shaded);
@@ -470,7 +470,7 @@ static void read_config(void)
 		{
 			for(i = 1; i <= length; i++)
 			{
-				gchar str[19], *temp;
+				gchar str[22], *temp;
 
 				sprintf(str, "url_history%d", i);
 				if (xmms_cfg_read_string(cfgfile, "xmms", str, &temp))
@@ -533,13 +533,15 @@ void save_config(void)
 	if (disabled_iplugins && (g_list_length(disabled_iplugins) > 0))
 	{
 		d_iplist = disabled_iplugins;
-		cfg.disabled_iplugins = g_strdup(g_basename(((InputPlugin *) d_iplist->data)->filename));
+		cfg.disabled_iplugins = g_path_get_basename(((InputPlugin *) d_iplist->data)->filename);
 		d_iplist = d_iplist->next;
 		while (d_iplist != NULL)
 		{
 			temp = cfg.disabled_iplugins;
-			cfg.disabled_iplugins = g_strconcat(temp, ",", g_basename(((InputPlugin *) d_iplist->data)->filename), NULL);
+			gchar *base = g_path_get_basename(((InputPlugin *) d_iplist->data)->filename);
+			cfg.disabled_iplugins = g_strconcat(temp, ",", base, NULL);
 			g_free(temp);
+			g_free(base);
 			d_iplist = d_iplist->next;
 		}
 	}
@@ -1455,7 +1457,7 @@ void mainwin_jump_to_time(void)
 	GtkWidget *vbox, *frame, *vbox_inside, *hbox_new, *hbox_total;
 	GtkWidget *time_entry, *label, *bbox, *jump, *cancel;
 	guint len, tindex;
-	gchar timestr[10];
+	gchar timestr[12];
 
 	if (!get_input_playing())
 		return;
@@ -1664,7 +1666,7 @@ static void mainwin_jump_to_file_edit_real(GtkWidget * widget, gpointer userdata
 		prev_focus = *tmp;
 
 	/* lowercase the key string */
-	g_strdown(key);
+	g_utf8_strdown(key, -1);
 
 	/* Chop the key string into ' '-separeted key words */
 	for (ptr = key; nw < 20; ptr = strchr(ptr, ' '))
@@ -2454,7 +2456,7 @@ void mainwin_show_dirbrowser(void)
 
 void mainwin_url_ok_clicked(GtkWidget * w, GtkWidget * entry)
 {
-	char *text = gtk_entry_get_text(GTK_ENTRY(entry));
+	char *text = g_strdup(gtk_entry_get_text(GTK_ENTRY(entry)));
 
 	if (text && *text)
 	{
@@ -2471,15 +2473,16 @@ void mainwin_url_ok_clicked(GtkWidget * w, GtkWidget * entry)
 		playlist_play();
 	}
 	gtk_widget_destroy(mainwin_url_window);
+	g_free(text);
 }
 
 void mainwin_url_enqueue_clicked(GtkWidget * w, GtkWidget * entry)
 {
-	gchar *text;
+	const gchar *text;
 
 	text = gtk_entry_get_text(GTK_ENTRY(entry));
 	if (text && *text)
-		playlist_add_url_string(text);
+		playlist_add_url_string((char*)text); // we dont seem to do anything mutable with it without g_strdup
 	gtk_widget_destroy(mainwin_url_window);
 }
 
@@ -3569,7 +3572,7 @@ gint idle_func(gpointer data)
 				number_set_number(mainwin_sec_num, timeleft % 10);
 				if (!mainwin_sposition->hs_pressed)
 				{
-					char temp[3];
+					char temp[10];
 
 					sprintf(temp,"%2.2d", timeleft / 60);
 					textbox_set_text(mainwin_stime_min, temp);
@@ -3974,15 +3977,17 @@ void handle_cmd_line_options(struct cmdlineopt *opt, gboolean remote)
 	{
 		if (opt->shuffle)
 		{
-			if (g_strcasecmp(opt->shuffle, "on") == 0)
+			gchar *shuffle = g_utf8_casefold(opt->shuffle, -1);
+
+			if (g_strcmp0(shuffle, "on") == 0)
 			{
-				if(!xmms_remote_is_shuffle(opt->session))
-		 			xmms_remote_toggle_shuffle(opt->session);
+				if (!xmms_remote_is_shuffle(opt->session))
+					xmms_remote_toggle_shuffle(opt->session);
 			}
-			else if (g_strcasecmp(opt->shuffle, "off") == 0)
+			else if (g_strcmp0(shuffle, "off") == 0)
 			{
-				if(xmms_remote_is_shuffle(opt->session))
-		 			xmms_remote_toggle_shuffle(opt->session);
+				if (xmms_remote_is_shuffle(opt->session))
+					xmms_remote_toggle_shuffle(opt->session);
 			}
 			else
 				/*
@@ -3992,6 +3997,7 @@ void handle_cmd_line_options(struct cmdlineopt *opt, gboolean remote)
 				fprintf(stderr, _("Value '%s' not understood, "
 						  "must be either 'on' or "
 						  "'off'.\n"), opt->shuffle);
+			g_free(shuffle);
 		}
 		else
 		{
@@ -4002,20 +4008,26 @@ void handle_cmd_line_options(struct cmdlineopt *opt, gboolean remote)
 	{
 		if (opt->repeat)
 		{
-			if (g_strcasecmp(opt->repeat, "on") == 0)
+			gchar *repeat_casefolded = g_utf8_casefold(opt->repeat, -1);
+
+			if (g_strcmp0(repeat_casefolded, "on") == 0)
 			{
-				if(!xmms_remote_is_repeat(opt->session))
-		 			xmms_remote_toggle_repeat(opt->session);
+				if (!xmms_remote_is_repeat(opt->session))
+					xmms_remote_toggle_repeat(opt->session);
 			}
-			else if (g_strcasecmp(opt->repeat, "off") == 0)
+			else if (g_strcmp0(repeat_casefolded, "off") == 0)
 			{
-				if(xmms_remote_is_repeat(opt->session))
-		 			xmms_remote_toggle_repeat(opt->session);
+				if (xmms_remote_is_repeat(opt->session))
+					xmms_remote_toggle_repeat(opt->session);
 			}
 			else
+			{
 				fprintf(stderr, _("Value '%s' not understood, "
-						  "must be either 'on' or "
-						  "'off'.\n"), opt->repeat);
+				"must be either 'on' or "
+				"'off'.\n"), opt->repeat);
+			}
+
+			g_free(repeat_casefolded);
 		}
 		else
 		{
@@ -4026,18 +4038,26 @@ void handle_cmd_line_options(struct cmdlineopt *opt, gboolean remote)
 	{
 		if (opt->advance)
 		{
-			if (g_strcasecmp(opt->advance, "on") == 0)
+			gchar *advance_casefolded = g_utf8_casefold(opt->advance, -1);
+
+			if (g_strcmp0(advance_casefolded, "on") == 0)
 			{
-				if(!xmms_remote_is_advance(opt->session))
-		 			xmms_remote_toggle_advance(opt->session);
+				if (!xmms_remote_is_advance(opt->session))
+					xmms_remote_toggle_advance(opt->session);
 			}
-			else if (g_strcasecmp(opt->advance, "off") == 0)
+			else if (g_strcmp0(advance_casefolded, "off") == 0)
 			{
-				if(xmms_remote_is_advance(opt->session))
-		 			xmms_remote_toggle_advance(opt->session);
+				if (xmms_remote_is_advance(opt->session))
+					xmms_remote_toggle_advance(opt->session);
 			}
 			else
-				fprintf(stderr, _("Value '%s' not understood, must be either 'on' or 'off'.\n"), opt->advance);
+			{
+				fprintf(stderr, _("Value '%s' not understood, "
+				"must be either 'on' or "
+				"'off'.\n"), opt->advance);
+			}
+
+			g_free(advance_casefolded);
 		}
 		else
 		{
@@ -4121,10 +4141,7 @@ int main(int argc, char **argv)
 
 	signal(SIGPIPE, SIG_IGN); /* for controlsocket.c */
 	signal(SIGSEGV, segfault_handler);
-	g_thread_init(NULL);
 	gtk_set_locale();
-	if (!g_thread_supported())
-		g_error(_("GLib does not support threads."));
 
 	parse_cmd_line(argc, argv, &options);
 

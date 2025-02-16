@@ -316,11 +316,8 @@ static gboolean inside_sensitive_widgets(gint x, gint y)
 
 void equalizerwin_press(GtkWidget * widget, GdkEventButton * event, gpointer callback_data)
 {
-	gint mx, my;
 	gboolean grab = TRUE;
 
-	mx = event->x;
-	my = event->y;
 	if (cfg.doublesize && cfg.eq_doublesize_linked)
 	{
 		event->x /= 2;
@@ -331,13 +328,14 @@ void equalizerwin_press(GtkWidget * widget, GdkEventButton * event, gpointer cal
 	    ((cfg.easy_move || cfg.equalizer_shaded || event->y < 14) &&
 	     !inside_sensitive_widgets(event->x, event->y)))
 	{
-		if (0 && hint_move_resize_available())
-		{
-			hint_move_resize(equalizerwin, event->x_root,
-					 event->y_root, TRUE);
-			grab = FALSE;
-		}
-		else
+		// dunno what happened here...
+		// if (0 && hint_move_resize_available())
+		// {
+		// 	hint_move_resize(equalizerwin, event->x_root,
+		// 			 event->y_root, TRUE);
+		// 	grab = FALSE;
+		// }
+		// else
 		{
 			equalizerwin_raise();
 			dock_move_press(dock_window_list, equalizerwin, event, FALSE);
@@ -861,7 +859,7 @@ void equalizerwin_real_hide(void)
 	tbutton_set_toggled(mainwin_eq, FALSE);
 }
 
-static EqualizerPreset *equalizerwin_find_preset(GList * list, gchar * name)
+static EqualizerPreset *equalizerwin_find_preset(GList * list, const gchar * name)
 {
 	GList *node = list;
 	EqualizerPreset *preset;
@@ -908,7 +906,7 @@ static void equalizerwin_write_preset_file(GList * list, gchar * fname)
 	g_free(filename);
 }
 
-static gboolean equalizerwin_load_preset(GList * list, gchar * name)
+static gboolean equalizerwin_load_preset(GList * list, const gchar * name)
 {
 	EqualizerPreset *preset;
 	gint i;
@@ -924,7 +922,7 @@ static gboolean equalizerwin_load_preset(GList * list, gchar * name)
 	return FALSE;
 }
 
-static GList *equalizerwin_save_preset(GList * list, gchar * name, gchar * fname)
+static GList *equalizerwin_save_preset(GList * list, const gchar * name, gchar * fname)
 {
 	gint i;
 	EqualizerPreset *preset;
@@ -945,7 +943,7 @@ static GList *equalizerwin_save_preset(GList * list, gchar * name, gchar * fname
 	return list;
 }
 
-static GList *equalizerwin_delete_preset(GList * list, gchar * name, gchar * fname)
+static GList *equalizerwin_delete_preset(GList * list, const gchar * name, gchar * fname)
 {
 	EqualizerPreset *preset;
 	GList *node;
@@ -1035,7 +1033,7 @@ static void equalizerwin_read_xmms_preset(ConfigFile *cfgfile)
 
 static void equalizerwin_save_ok(GtkWidget * widget, gpointer data)
 {
-	gchar *text;
+	const gchar *text;
 
 	text = gtk_entry_get_text(GTK_ENTRY(equalizerwin_save_entry));
 	if (strlen(text) != 0)
@@ -1098,7 +1096,7 @@ static void equalizerwin_delete_delete(GtkWidget * widget, gpointer data)
 
 static void equalizerwin_save_auto_ok(GtkWidget * widget, gpointer data)
 {
-	gchar *text;
+	const gchar *text;
 
 	text = gtk_entry_get_text(GTK_ENTRY(equalizerwin_save_auto_entry));
 	if (strlen(text) != 0)
@@ -1160,7 +1158,7 @@ static void equalizerwin_delete_auto_delete(GtkWidget * widget, gpointer data)
 
 static void equalizerwin_load_filesel_ok(GtkWidget * w, GtkFileSelection * filesel)
 {
-	gchar *filename;
+	const gchar *filename;
 	ConfigFile *cfgfile;
 
 	if (util_filebrowser_is_dir(filesel))
@@ -1178,7 +1176,7 @@ static void equalizerwin_load_filesel_ok(GtkWidget * w, GtkFileSelection * files
 
 static void equalizerwin_import_winamp_filesel_ok(GtkWidget * w, GtkFileSelection * filesel)
 {
-	gchar *filename;
+	const gchar *filename;
 	FILE *file;
 
 	if (util_filebrowser_is_dir(filesel))
@@ -1198,7 +1196,7 @@ static void equalizerwin_import_winamp_filesel_ok(GtkWidget * w, GtkFileSelectio
 
 static void equalizerwin_load_winamp_filesel_ok(GtkWidget * w, GtkFileSelection * filesel)
 {
-	gchar *filename;
+	const gchar *filename;
 	FILE *file;
 
 	if (util_filebrowser_is_dir(filesel))
@@ -1214,7 +1212,7 @@ static void equalizerwin_load_winamp_filesel_ok(GtkWidget * w, GtkFileSelection 
 
 static void equalizerwin_save_filesel_ok(GtkWidget * w, GtkFileSelection * filesel)
 {
-	gchar *filename;
+	const gchar *filename;
 	ConfigFile *cfgfile;
 	gint i;
 
@@ -1239,7 +1237,8 @@ static void equalizerwin_save_filesel_ok(GtkWidget * w, GtkFileSelection * files
 
 static void equalizerwin_save_winamp_filesel_ok(GtkWidget * w, GtkFileSelection * filesel)
 {
-	gchar *filename, name[257];
+	const gchar *filename;
+	gchar name[257];
 	FILE *file;
 	gint i;
 	guchar bands[11];
@@ -1455,7 +1454,9 @@ void equalizerwin_presets_menu_cb(gpointer cb_data, guint action, GtkWidget * w)
 				gdk_window_raise(equalizerwin_save_auto_window->window);
 			if ((name = playlist_get_filename(get_playlist_position())) != NULL)
 			{
-				gtk_entry_set_text(GTK_ENTRY(equalizerwin_save_auto_entry), g_basename(name));
+				gchar *basename = g_path_get_basename(name);
+				gtk_entry_set_text(GTK_ENTRY(equalizerwin_save_auto_entry), basename);
+				g_free(basename);
 				g_free(name);
 			}
 			break;
@@ -1524,7 +1525,7 @@ void equalizerwin_presets_menu_cb(gpointer cb_data, guint action, GtkWidget * w)
 
 void equalizerwin_load_auto_preset(gchar * filename)
 {
-	gchar *presetfilename, *directory;
+	gchar *presetfilename, *directory, *basename;
 	ConfigFile *cfgfile;
 
 	if (!cfg.equalizer_autoload)
@@ -1546,10 +1547,12 @@ void equalizerwin_load_auto_preset(gchar * filename)
 		return;
 	}
 
-	directory = g_dirname(filename);
+	directory = g_path_get_dirname(filename);
 	g_free(presetfilename);
 	presetfilename = g_strdup_printf("%s/%s", directory, cfg.eqpreset_default_file);
 	g_free(directory);
+
+	basename = g_path_get_basename(filename);
 
 	/*
 	 * Try to find a per directory preset file
@@ -1563,9 +1566,10 @@ void equalizerwin_load_auto_preset(gchar * filename)
 	/*
 	 * Fall back to the oldstyle auto presets
 	 */
-	else if (!equalizerwin_load_preset(equalizer_auto_presets, g_basename(filename)))
+	else if (!equalizerwin_load_preset(equalizer_auto_presets, basename))
 		equalizerwin_load_preset(equalizer_presets, "Default");
 	g_free(presetfilename);
+	g_free(basename);
 }
 
 void equalizerwin_set_preamp(gfloat preamp)
@@ -1607,14 +1611,14 @@ static void equalizerwin_conf_apply_changes(void)
 	while (*start == '.')
 		start++;
 	if (start != cfg.eqpreset_default_file)
-		g_memmove(cfg.eqpreset_default_file, start, strlen(start) + 1);
+		memmove(cfg.eqpreset_default_file, start, strlen(start) + 1);
 
 	g_strstrip(cfg.eqpreset_extension);
 	start = cfg.eqpreset_extension;
 	while (*start == '.')
 		start++;
 	if (start != cfg.eqpreset_extension)
-		g_memmove(cfg.eqpreset_extension, start, strlen(start) + 1);
+		memmove(cfg.eqpreset_extension, start, strlen(start) + 1);
 }
 
 static void equalizerwin_conf_ok_cb(GtkWidget * w, gpointer data)
