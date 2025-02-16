@@ -180,7 +180,7 @@ static void textbox_generate_xfont_pixmap(TextBox * tb, gchar *pixmaptext)
 		gdk_gc_set_foreground(tb->tb_widget.gc, &c[6 * i / tb->tb_widget.height]);
 		gdk_draw_line(tb->tb_pixmap, tb->tb_widget.gc, 0, i, tb->tb_pixmap_width, i);
 	}
-	gdk_draw_layout_with_colors(tb->tb_pixmap, tb->tb_widget.gc, 0, -3, layout, get_skin_color(SKIN_TEXTFG), get_skin_color(SKIN_TEXTBG)); // TODO the -3 has to go one day
+	gdk_draw_layout_with_colors(tb->tb_pixmap, tb->tb_widget.gc, 0, -4, layout, get_skin_color(SKIN_TEXTFG), get_skin_color(SKIN_TEXTBG)); // TODO the -4 has to go one day
 	g_object_unref(layout);
 }
 
