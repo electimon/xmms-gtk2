@@ -4003,7 +4003,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=xmms
- VERSION=1.2.12
+ VERSION=1.2.11
 
 
 printf "%s\n" "#define PACKAGE \"$PACKAGE\"" >>confdefs.h
@@ -28365,7 +28365,7 @@ printf "%s\n" "#define SIZEOF_LONG $ac_cv_sizeof_long" >>confdefs.h
 
 if test -n "$GCC"
 then
-  CFLAGS="$CFLAGS -Wall -Wno-unused-result -Wpointer-arith -finline-functions"
+  CFLAGS="$CFLAGS -Wall -Wpointer-arith -finline-functions"
   case "$CFLAGS" in
     -g*) ;;
     *\ -g*) ;;
