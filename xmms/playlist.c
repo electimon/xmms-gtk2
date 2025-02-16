@@ -346,7 +346,7 @@ void playlist_ins(char * filename, long pos)
 
 				for (p = buf; r-- > 0 && (*p == '\r' || *p == '\n'); p++)
 					;
-				if (r > 5 && !strncasecmp(p, "http:", 5))
+				if (r > 5 && (!strncasecmp(p, "http:", 5) || !strncasecmp(p, "https:", 6)))
 					ispl = TRUE;
 			}
 		}
