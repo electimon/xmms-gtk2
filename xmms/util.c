@@ -924,6 +924,8 @@ void util_dialog_keypress_cb(GtkWidget *w, GdkEventKey *event, gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
 		gtk_widget_destroy(w);
+	else
+		gtk_window_activate_key(GTK_WINDOW(w), event);
 }
 
 gchar *str_to_utf8_fallback(const gchar * str)
