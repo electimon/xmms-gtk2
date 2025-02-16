@@ -14,6 +14,7 @@ msgstr ""
 "PO-Revision-Date: 2004-01-17 09:58-0300\n"
 "Last-Translator: Fabian Mandelbaum <fabman@mandrakesoft.com>\n"
 "Language-Team: Español <es@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -866,9 +867,9 @@ msgstr "Separación de paneo predeterminada"
 msgid "Quality"
 msgstr "Calidad"
 
-#: Input/mikmod/plugin.c:606 Input/mpg123/configure.c:367
-#: xmms/equalizer.c:1653 xmms/equalizer.c:1689 xmms/prefswin.c:960
-#: xmms/prefswin.c:1055 xmms/prefswin.c:1062
+#: Input/mikmod/plugin.c:606 Input/mpg123/configure.c:367 xmms/equalizer.c:1653
+#: xmms/equalizer.c:1689 xmms/prefswin.c:960 xmms/prefswin.c:1055
+#: xmms/prefswin.c:1062
 msgid "Options"
 msgstr "Opciones"
 
@@ -1865,8 +1866,8 @@ msgstr ""
 "Generador de tonos senoidales por Håvard Kvålen <havardk@xmms.org>\n"
 "Modificado por Daniel J. Peng <danielpeng@bigfoot.com>\n"
 "\n"
-"Para usarlo, agregue una URL: tone://frecuenciai1;frecuencia2;"
-"frecuencia3;...\n"
+"Para usarlo, agregue una URL: tone://"
+"frecuenciai1;frecuencia2;frecuencia3;...\n"
 "ej. tone://2000;2005 para reproducir un tono de 2000Hz y otro de 2005Hz"
 
 #: Input/tonegen/tonegen.c:164

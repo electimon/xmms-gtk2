@@ -7,6 +7,7 @@ msgstr ""
 "PO-Revision-Date: 2004-10-26 00:04+0200\n"
 "Last-Translator: Matthew Williams <xmms@madskills.org.uk>\n"
 "Language-Team: British English\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -852,9 +853,9 @@ msgstr "Default panning separation"
 msgid "Quality"
 msgstr "Quality"
 
-#: Input/mikmod/plugin.c:606 Input/mpg123/configure.c:367
-#: xmms/equalizer.c:1653 xmms/equalizer.c:1689 xmms/prefswin.c:960
-#: xmms/prefswin.c:1055 xmms/prefswin.c:1062
+#: Input/mikmod/plugin.c:606 Input/mpg123/configure.c:367 xmms/equalizer.c:1653
+#: xmms/equalizer.c:1689 xmms/prefswin.c:960 xmms/prefswin.c:1055
+#: xmms/prefswin.c:1062
 msgid "Options"
 msgstr "Options"
 

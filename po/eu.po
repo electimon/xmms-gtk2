@@ -12,6 +12,7 @@ msgstr ""
 "PO-Revision-Date: 2004-01-26 00:09+0100\n"
 "Last-Translator: Iñigo Salvador Azurmendi <xalba@euskalnet.net>\n"
 "Language-Team: Euskara <linux-eu@chanae.alphanet.ch>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -866,9 +867,9 @@ msgstr "Banantze panoramiko lehenetsia"
 msgid "Quality"
 msgstr "Kalitatea"
 
-#: Input/mikmod/plugin.c:606 Input/mpg123/configure.c:367
-#: xmms/equalizer.c:1653 xmms/equalizer.c:1689 xmms/prefswin.c:960
-#: xmms/prefswin.c:1055 xmms/prefswin.c:1062
+#: Input/mikmod/plugin.c:606 Input/mpg123/configure.c:367 xmms/equalizer.c:1653
+#: xmms/equalizer.c:1689 xmms/prefswin.c:960 xmms/prefswin.c:1055
+#: xmms/prefswin.c:1062
 msgid "Options"
 msgstr "Aukerak"
 
@@ -1862,8 +1863,8 @@ msgstr ""
 "Sinus tonu sortzailearen egilea Haarvard Kvaalen <havardk@xmms.org>\n"
 "Daniel J. Peng-ek aldatua<danielpeng@bigfoot.com>\n"
 "\n"
-"Berau erabiltzeko, erantsi URL bat: tone://Maiztasuna1;Maiztasuna2;"
-"Maiztasuna3;...\n"
+"Berau erabiltzeko, erantsi URL bat: tone://"
+"Maiztasuna1;Maiztasuna2;Maiztasuna3;...\n"
 "adibidez tone://2000;2005   2000Hz eta 2005Hz-ko tonu bana jotzeko"
 
 #: Input/tonegen/tonegen.c:164

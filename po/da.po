@@ -12,6 +12,7 @@ msgstr ""
 "PO-Revision-Date: 2003-07-20 19:16+01:00\n"
 "Last-Translator: Keld Simonsen <keld@dkuug.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
+"Language: da\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -858,9 +859,9 @@ msgstr "Standard balancefordeling"
 msgid "Quality"
 msgstr "Kvalitet"
 
-#: Input/mikmod/plugin.c:606 Input/mpg123/configure.c:367
-#: xmms/equalizer.c:1653 xmms/equalizer.c:1689 xmms/prefswin.c:960
-#: xmms/prefswin.c:1055 xmms/prefswin.c:1062
+#: Input/mikmod/plugin.c:606 Input/mpg123/configure.c:367 xmms/equalizer.c:1653
+#: xmms/equalizer.c:1689 xmms/prefswin.c:960 xmms/prefswin.c:1055
+#: xmms/prefswin.c:1062
 msgid "Options"
 msgstr "Indstillinger"
 

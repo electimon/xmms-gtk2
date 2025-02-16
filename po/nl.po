@@ -13,6 +13,7 @@ msgstr ""
 "PO-Revision-Date: 2004-01-28 00:15+0100\n"
 "Last-Translator: Bart Coppens <bart@bartcoppens.be>\n"
 "Language-Team:  <en@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -338,8 +339,8 @@ msgstr ""
 " Door Tim Ferguson <timf@dgs.monash.edu.au>.\n"
 " http://www.dgs.monash.edu.au/~timf/\n"
 "\n"
-" Ondersteuning voor meer dan 5 knoppen door Justin Wake <justin@globalsoft."
-"com.au>\n"
+" Ondersteuning voor meer dan 5 knoppen door Justin Wake "
+"<justin@globalsoft.com.au>\n"
 "\n"
 " Bestuur XMMS met een of meerdere joysticks.\n"
 " "
@@ -871,9 +872,9 @@ msgstr "Standaard panning-scheiding"
 msgid "Quality"
 msgstr "Kwaliteit"
 
-#: Input/mikmod/plugin.c:606 Input/mpg123/configure.c:367
-#: xmms/equalizer.c:1653 xmms/equalizer.c:1689 xmms/prefswin.c:960
-#: xmms/prefswin.c:1055 xmms/prefswin.c:1062
+#: Input/mikmod/plugin.c:606 Input/mpg123/configure.c:367 xmms/equalizer.c:1653
+#: xmms/equalizer.c:1689 xmms/prefswin.c:960 xmms/prefswin.c:1055
+#: xmms/prefswin.c:1062
 msgid "Options"
 msgstr "Opties"
 
@@ -1867,8 +1868,8 @@ msgstr ""
 "Sinustoongenerator door Håvard Kvålen <havardk@xmms.org>\n"
 "Gewijzigd door Daniel J. Peng <danielpeng@bigfoot.com>\n"
 "\n"
-"Om het te gebruiken, voeg een URL: tone://frequency1;frequency2;"
-"frequency3;...\n"
+"Om het te gebruiken, voeg een URL: tone://"
+"frequency1;frequency2;frequency3;...\n"
 " dus tone://2000;2005 om een 2000Hz toon en een 2005Hz toon af te spelen"
 
 #: Input/tonegen/tonegen.c:164

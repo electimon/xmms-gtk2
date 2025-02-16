@@ -11,6 +11,7 @@ msgstr ""
 "PO-Revision-Date: 2001-11-12 01:00+0100\n"
 "Last-Translator: Roy-Magne Mo <rmo@sunnmore.net>\n"
 "Language-Team: nynorsk <nn@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -148,8 +149,8 @@ msgid ""
 msgstr ""
 "Stemmefjernartilkopling for XMMS\n"
 "\n"
-"Ei enkel tilkopling for fjerning av stemmer av Anders Carlsson <andersca@gnu."
-"org>"
+"Ei enkel tilkopling for fjerning av stemmer av Anders Carlsson "
+"<andersca@gnu.org>"
 
 #: Effect/voice/voice.c:23
 #, c-format
@@ -849,9 +850,9 @@ msgstr "Standard balansefordeling"
 msgid "Quality"
 msgstr "Kvalitet"
 
-#: Input/mikmod/plugin.c:606 Input/mpg123/configure.c:367
-#: xmms/equalizer.c:1653 xmms/equalizer.c:1689 xmms/prefswin.c:960
-#: xmms/prefswin.c:1055 xmms/prefswin.c:1062
+#: Input/mikmod/plugin.c:606 Input/mpg123/configure.c:367 xmms/equalizer.c:1653
+#: xmms/equalizer.c:1689 xmms/prefswin.c:960 xmms/prefswin.c:1055
+#: xmms/prefswin.c:1062
 msgid "Options"
 msgstr "Val"
 
@@ -1847,8 +1848,8 @@ msgstr ""
 "Sinus tonegenerator av Håvard Kvålen <havardk@xmms.org>\n"
 "Endra av Daniel J. Peng <danielpeng@bigfoot.com>\n"
 "\n"
-"For å bruke denne, legg til ein URL: tone://frekvens1;frekvens2;"
-"frekvens3;...\n"
+"For å bruke denne, legg til ein URL: tone://"
+"frekvens1;frekvens2;frekvens3;...\n"
 "t.d. tone://2000;2005 for å spele ein 2000Hz og ein 2005Hz tone"
 
 #: Input/tonegen/tonegen.c:164

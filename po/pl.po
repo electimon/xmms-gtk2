@@ -18,6 +18,7 @@ msgstr ""
 "PO-Revision-Date: 2005-01-15 11:10+0100\n"
 "Last-Translator: b\n"
 "Language-Team:  <pl@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -342,8 +343,8 @@ msgstr ""
 " Stworzona przez Tima Fergusona <timf@dgs.monash.edu.au>.\n"
 " http://www.dgs.monash.edu.au/~timf/\n"
 "\n"
-"Obs³uga ponad piêciu przycisków autorstwa Justina Wake'a <justin@globalsoft."
-"com.au>\n"
+"Obs³uga ponad piêciu przycisków autorstwa Justina Wake'a "
+"<justin@globalsoft.com.au>\n"
 "\n"
 "Pozwala na sterowanie XMMS-em przy u¿yciu jednego lub dwóch joysticków.\n"
 
@@ -872,9 +873,9 @@ msgstr "Domy¶lna separacja panning"
 msgid "Quality"
 msgstr "Jako¶æ"
 
-#: Input/mikmod/plugin.c:606 Input/mpg123/configure.c:367
-#: xmms/equalizer.c:1653 xmms/equalizer.c:1689 xmms/prefswin.c:960
-#: xmms/prefswin.c:1055 xmms/prefswin.c:1062
+#: Input/mikmod/plugin.c:606 Input/mpg123/configure.c:367 xmms/equalizer.c:1653
+#: xmms/equalizer.c:1689 xmms/prefswin.c:960 xmms/prefswin.c:1055
+#: xmms/prefswin.c:1062
 msgid "Options"
 msgstr "Opcje"
 
@@ -1865,12 +1866,12 @@ msgid ""
 "To use it, add a URL: tone://frequency1;frequency2;frequency3;...\n"
 "e.g. tone://2000;2005 to play a 2000Hz tone and a 2005Hz tone"
 msgstr ""
-"Generator tonów sinusoidalnych, napisany przez Håvarda Kvålena <havardk@xmms."
-"org>\n"
+"Generator tonów sinusoidalnych, napisany przez Håvarda Kvålena "
+"<havardk@xmms.org>\n"
 "Zmodyfikowany przez Daniela J. Penga <danielpeng@bigfoot.com>\n"
 "\n"
-"Aby go u¿yæ, podaj URL w postaci: tone://czêstotliwo¶æ1;czêstotliwo¶æ2;"
-"czêstotliwo¶æ3;...\n"
+"Aby go u¿yæ, podaj URL w postaci: tone://"
+"czêstotliwo¶æ1;czêstotliwo¶æ2;czêstotliwo¶æ3;...\n"
 "np. tone://2000;2005, aby wygenerowaæ tony 2000 Hz i 2005Hz"
 
 #: Input/tonegen/tonegen.c:164
