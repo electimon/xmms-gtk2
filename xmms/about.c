@@ -35,6 +35,7 @@ static const char *credit_text[] =
 	/* I18N: UTF-8 Translation: "H\303\245vard Kv\303\245len" */
 	N_("Haavard Kvaalen"),
 	N_("Derrik Pates"),
+        N_("Oleg Pudeyev"),
 	NULL,
  N_("With Additional Help:"),
 	N_("Tony Arcieri"),
