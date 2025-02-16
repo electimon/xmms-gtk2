@@ -102,3 +102,17 @@ _deps
 /.vs*/
 
 po/
+i18n.h
+i18n.h].in
+stamp-h2
+xmms.1
+xmms-gtk2.kdev4
+xmms-config
+wmxmms/wmxmms
+wmxmms.1
+po/*.po
+po/*.gmo
+*.h.in
+libxmms/\[config.h\].in
+xmms/xmms
+*~
