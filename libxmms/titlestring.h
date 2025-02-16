@@ -21,7 +21,7 @@
 #define XMMS_TITLESTRING_H
 
 #include <glib.h>
-#include <gtk/gtk.h>
+#include "gtk.h"
 
 
 /*

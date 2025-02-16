@@ -34,8 +34,7 @@
 #include <string.h>
 #include <gdk/gdkkeysyms.h>
 #include <gdk/gdki18n.h>
-#include <gtk/gtkmain.h>
-#include <gtk/gtkoldeditable.h>
+#include "gtk.h"
 #include "xentry.h"
 #include "gtkcompat.h"
 

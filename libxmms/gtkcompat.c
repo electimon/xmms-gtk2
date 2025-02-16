@@ -1,4 +1,4 @@
-#include <gtk/gtkoldeditable.h>
+#include "gtk.h"
 #include "gtkcompat.h"
 
 void gtk_old_editable_set_position (GtkOldEditable *editable,

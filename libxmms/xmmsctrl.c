@@ -788,7 +788,7 @@ void xmms_remote_get_eq(int session, float *preamp, float **bands)
 			if (preamp)
 				*preamp = *((float *) data);
 			if (bands)
-				*bands = g_memdup((float *)data + 1, 10 * sizeof(float));
+				*bands = g_memdup2((float *)data + 1, 10 * sizeof(float));
 		}
 		g_free(data);
 	}

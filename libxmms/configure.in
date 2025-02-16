@@ -36,7 +36,7 @@ AM_PATH_GTK_2_0([2.0.0],,[AC_MSG_ERROR([*** GTK+ >= 2.0.0 not installed - please
 
 if test -n "$GCC"
 then
-  CFLAGS="$CFLAGS -Wall -Wpointer-arith"
+  CFLAGS="$CFLAGS -Wall -Werror -Wno-unused-result -Wpointer-arith"
 fi
 
 AC_HEADER_TIME

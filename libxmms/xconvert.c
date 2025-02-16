@@ -563,7 +563,7 @@ do {								\
 #define RESAMPLE_MONO(sample_type, bswap)			\
 do {								\
 	const int shift = sizeof (sample_type) - 1;		\
-        int i, x, delta, in_samples, out_samples;		\
+        int i, x, delta, out_samples;		\
 	sample_type *inptr = *data, *outptr;			\
 	guint nlen = (((length >> shift) * ofreq) / ifreq);	\
 	void *nbuf;						\
@@ -574,7 +574,6 @@ do {								\
 		convert_swap_endian(NULL, data, length);	\
 	nbuf = convert_get_buffer(&buf->freq_buffer, nlen);	\
 	outptr = nbuf;						\
-	in_samples = length >> shift;				\
         out_samples = nlen >> shift;				\
 	delta = ((length >> shift) << 12) / out_samples;	\
 	for (x = 0, i = 0; i < out_samples; i++)		\

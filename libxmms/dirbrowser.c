@@ -30,7 +30,8 @@
 
 #include <string.h>
 
-#include <gtk/gtk.h>
+#include "gtk.h"
+
 #include <stdio.h>
 
 /* XPM */

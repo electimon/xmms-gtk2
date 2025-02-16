@@ -2,7 +2,7 @@
 #include "config.h"
 #endif
 
-#include <gtk/gtk.h>
+#include "gtk.h"
 
 #ifdef HAVE_SCHED_H
 #include <sched.h>
