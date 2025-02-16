@@ -25,7 +25,10 @@
  */
 
 static const char *credit_text[] =
-{N_("Main Programming:") ,
+{N_("Maintainer:"),
+    N_("Stella Diaz (electimon)"),
+    NULL,
+ N_("Main Programming:") ,
 	N_("Peter Alm"),
 	NULL,
  N_("Additional Programming:"),

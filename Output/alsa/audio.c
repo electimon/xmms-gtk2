@@ -1173,7 +1173,7 @@ static int alsa_setup(struct snd_format *f)
 	      hw_buffer_size);
 	debug("Device setup: period time: %i, size: %i.", alsa_period_time,
 	      hw_period_size);
-	debug("bits per sample: %i; frame size: %i; Bps: %i",
+	debug("bits per sample: %i; frame size: %li; Bps: %i",
 	      snd_pcm_format_physical_width(outputf->format),
 	      snd_pcm_frames_to_bytes(alsa_pcm, 1), outputf->bps);
 

@@ -60,7 +60,10 @@ static void set_entry_tag(GtkEntry * entry, char * tag, int length)
 
 static void get_entry_tag(GtkEntry * entry, char * tag, int length)
 {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-truncation"
 	strncpy(tag, gtk_entry_get_text(entry), length);
+#pragma GCC diagnostic pop
 }
 
 static int genre_find_index(GList *genre_list, int id)
@@ -271,7 +274,7 @@ void mpg123_file_info_box(char *filename)
 	int i;
 	struct id3v1tag_t tag;
 	FILE *fh;
-	char *tmp, *title;
+	char *tmp, *title, *tmp2;
 	const char *emphasis[4];
 	const char *bool_label[2];
 
@@ -490,14 +493,16 @@ void mpg123_file_info_box(char *filename)
 		g_free(current_filename);
 	current_filename = g_strdup(filename);
 
-	title = g_strdup_printf(_("File Info - %s"), g_basename(filename));
+	tmp2 = g_path_get_basename(filename);
+	title = g_strdup_printf(_("File Info - %s"), tmp2);
 	gtk_window_set_title(GTK_WINDOW(window), title);
 	g_free(title);
 
 	gtk_entry_set_text(GTK_ENTRY(filename_entry), filename);
 	gtk_editable_set_position(GTK_EDITABLE(filename_entry), -1);
 
-	title = g_strdup(g_basename(filename));
+	title = g_strdup(tmp2);
+	g_free(tmp2);
 	if ((tmp = strrchr(title, '.')) != NULL)
 		*tmp = '\0';
 	gtk_entry_set_text(GTK_ENTRY(title_entry), title);

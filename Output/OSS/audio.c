@@ -372,7 +372,7 @@ do {								\
 #define RESAMPLE_MONO(sample_type)				\
 do {								\
 	const gint shift = sizeof (sample_type) - 1;		\
-        gint i, x, delta, in_samples, out_samples;		\
+        gint i, x, delta, out_samples;		\
 	sample_type *inptr = (sample_type *)ob, *outptr;	\
 	guint nlen = (((length >> shift) * espeed) / speed);	\
 	if (nlen == 0)						\
@@ -386,7 +386,6 @@ do {								\
 		nbuffer_size = nlen;				\
 	}							\
 	outptr = (sample_type *)nbuffer;			\
-	in_samples = length >> shift;				\
         out_samples = nlen >> shift;				\
 	delta = ((length >> shift) << 12) / out_samples;	\
 	for (x = 0, i = 0; i < out_samples; i++)		\

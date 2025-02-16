@@ -124,8 +124,6 @@ static char *get_title(gchar *filename)
 	TitleInput *input;
 	char *temp, *ext, *title, *path, *temp2;
 
-	XMMS_NEW_TITLEINPUT(input);
-
 	path = g_strdup(filename);
 	temp = g_strdup(filename);
 	ext = strrchr(temp, '.');
@@ -135,7 +133,8 @@ static char *get_title(gchar *filename)
 	if (temp2)
 		*temp2 = '\0';
 
-	input->file_name = g_basename(filename);
+	XMMS_NEW_TITLEINPUT(input);
+	input->file_name = g_path_get_basename(filename);
 	input->file_ext = ext ? ext+1 : NULL;
 	input->file_path = g_strdup_printf("%s/", path);
 
@@ -145,6 +144,7 @@ static char *get_title(gchar *filename)
 
 	g_free(temp);
 	g_free(path);
+	g_free(input->file_name);
 	g_free(input);
 
 	return title;
