@@ -1,5 +1,5 @@
 %define	name	xmms
-%define	version	1.2.11
+%define	version	1.2.12
 %define	release	1
 %define	epoch	1
 %define	prefix	/usr

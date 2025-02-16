@@ -1,3 +1,22 @@
+xmms 1.2.12
+
+	Well, I just really really really love XMMS, what can I say?
+
+	XMMS:
+	* Start porting over to Gtk+2.0 - incomplete, however builds
+	and runs nicely!
+	* Start enabling Werror - incomplete, some modules still fail to
+	build...
+
+	Playlist/Textboxes:
+	* Move over to using Pango for text rendering, this allows
+	us to use the X font option to properly display a variety of
+	fonts, given the user has them installed. Noteably this fixes
+	rendering characters like katakana/hiragana and the unicode alike.
+
+	Playlist Window:
+	* Added the ability to scroll with mouse wheel.
+
 xmms 1.2.11
 
 	The '1211 days since last release' release.  XMMS was 10 years
