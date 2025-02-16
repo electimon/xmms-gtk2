@@ -359,6 +359,8 @@ static void textbox_generate_pixmap(TextBox * tb)
 	else
 		pixmaptext = g_strdup(tb->tb_pixmap_text);
 
+	if (!pixmaptext)
+		return;
 
 	if (tb->tb_is_scrollable)
 	{

@@ -1148,6 +1148,8 @@ static void playlist_load_ins_file(char *filename, char *playlist_name,
 	if (filename[0] != '/' && !strstr(filename, "://"))
 	{
 		path = g_strdup(playlist_name);
+		if (path == NULL)
+			return;
 		temp = strrchr(path, '/');
 		if (temp)
 			*temp = '\0';

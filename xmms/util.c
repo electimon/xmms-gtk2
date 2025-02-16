@@ -658,7 +658,7 @@ gboolean util_filebrowser_is_dir(GtkFileSelection * filesel)
 	gboolean retv = FALSE;
 
 	text = g_strdup(gtk_file_selection_get_filename(filesel));
-	if (strlen(text) == 0)
+	if (text != NULL && strlen(text) == 0)
 	{
 		/*
 		 * This is a weird special case.  If the "current" dir
@@ -670,7 +670,7 @@ gboolean util_filebrowser_is_dir(GtkFileSelection * filesel)
 		text = g_strdup(gtk_entry_get_text(GTK_ENTRY(filesel->selection_entry)));
 	}
 
-	if ((stat(text, &buf) == 0 && S_ISDIR(buf.st_mode)) || strlen(text) == 0)
+	if (text != NULL && ((stat(text, &buf) == 0 && S_ISDIR(buf.st_mode)) || strlen(text) == 0))
 	{
 		/* Selected directory */
 		int len = strlen(text);

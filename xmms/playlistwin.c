@@ -879,7 +879,13 @@ static void playlistwin_load_filesel_ok(GtkWidget * w, GtkWidget * filesel)
 		return;
 
 	filename = g_strdup(gtk_file_selection_get_filename(GTK_FILE_SELECTION(filesel)));
+	if (filename == NULL)
+		return;
 	text = g_strdup(filename);
+	if (text == NULL) {
+		g_free(filename);
+		return;
+	}
 
 	if ((tmp = strrchr(text, '/')) != NULL)
 		*(tmp + 1) = '\0';

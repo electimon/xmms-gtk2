@@ -361,11 +361,13 @@ void input_get_song_info(gchar * filename, gchar ** title, gint * length)
 		gchar *temp, *ext;
 		TitleInput *input;
 
-		XMMS_NEW_TITLEINPUT(input);
 		temp = g_strdup(filename);
+		if (temp == NULL)
+			return;
 		ext = strrchr(temp, '.');
 		if (ext)
 			*ext = '\0';
+		XMMS_NEW_TITLEINPUT(input);
 		input->file_name = g_path_get_basename(temp);
 		input->file_ext = ext ? ext+1 : NULL;
 		input->file_path = temp;

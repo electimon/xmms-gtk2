@@ -1189,6 +1189,7 @@ static void equalizerwin_import_winamp_filesel_ok(GtkWidget * w, GtkFileSelectio
 		equalizer_presets = g_list_concat(equalizer_presets,
 				    equalizerwin_import_winamp_eqf(file));
 		equalizerwin_write_preset_file(equalizer_presets, "eq.preset");
+		fclose(file);
 	}
 
 	gtk_widget_destroy(GTK_WIDGET(filesel));
@@ -1204,8 +1205,10 @@ static void equalizerwin_load_winamp_filesel_ok(GtkWidget * w, GtkFileSelection 
 
 	filename = gtk_file_selection_get_filename(filesel);
 
-	if ((file = fopen(filename, "rb")) != NULL)
+	if ((file = fopen(filename, "rb")) != NULL) {
 		equalizerwin_read_winamp_eqf(file);
+		fclose(file);
+	}
 
 	gtk_widget_destroy(GTK_WIDGET(filesel));
 }

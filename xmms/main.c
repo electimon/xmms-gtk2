@@ -4072,10 +4072,11 @@ void handle_cmd_line_options(struct cmdlineopt *opt, gboolean remote)
 
 void segfault_handler(int sig)
 {
-	printf(_("\nSegmentation fault\n\n"
+	const char *message = (_("\nSegmentation fault\n\n"
 		 "You've probably found a bug in XMMS, please visit\n"
 		 "http://bugs.xmms.org and fill out a bug report.\n\n"));
-	exit(1);
+	write(STDOUT_FILENO, message, strlen(message));
+	_exit(1);
 }
 
 static void enable_x11r5_session_management(int argc, char **argv)
