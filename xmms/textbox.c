@@ -163,14 +163,14 @@ void textbox_set_text(TextBox * tb, gchar * text)
 static void textbox_generate_xfont_pixmap(TextBox * tb, gchar *pixmaptext)
 {
 	PangoLayout *layout = gtk_widget_create_pango_layout(mainwin, pixmaptext);
-	int cw = char_width(tb->tb_font_desc);
+	int width;
 
-	tb->tb_pixmap_width = ((cw * strlen(pixmaptext)) - tb->tb_widget.width);
-	if (tb->tb_pixmap_width < tb->tb_widget.width)
-		tb->tb_pixmap_width = tb->tb_widget.width;
-	//printf("Width of pixmap: %d\n", tb->tb_pixmap_width);
 	pango_layout_set_font_description(layout, tb->tb_font_desc);
 	util_fit_font_to_layout(layout, tb->tb_widget.height - PANGO_SCALE*2); // looks nicer when its slightly smaller
+	pango_layout_get_pixel_size(layout, &width, NULL);
+	tb->tb_pixmap_width = width;
+	if (tb->tb_pixmap_width < tb->tb_widget.width)
+		tb->tb_pixmap_width = tb->tb_widget.width;
 	tb->tb_pixmap = gdk_pixmap_new(mainwin->window, tb->tb_pixmap_width,
 								   tb->tb_widget.height-1,
 								gdk_rgb_get_visual()->depth);
