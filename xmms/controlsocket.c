@@ -181,9 +181,9 @@ static void ctrl_write_gfloat(gint fd, gfloat val)
 	ctrl_write_packet(fd, &val, sizeof (gfloat));
 }
 
-static void ctrl_write_gboolean(gint fd, gboolean bool)
+static void ctrl_write_gboolean(gint fd, gboolean boolean)
 {
-	ctrl_write_packet(fd, &bool, sizeof (gboolean));
+	ctrl_write_packet(fd, &boolean, sizeof (gboolean));
 }
 
 static void ctrl_write_string(gint fd, gchar * string)

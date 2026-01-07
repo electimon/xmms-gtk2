@@ -22,4 +22,4 @@ gtkcompat.c gtkcompat.h
 
 xmmsinclude_HEADERS = configfile.h xmmsctrl.h dirbrowser.h util.h formatter.h titlestring.h
 
-SUBDIRS = . po
+SUBDIRS = .

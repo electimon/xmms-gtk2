@@ -1,11 +1,15 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT([xmms/main.c])
+AC_INIT([xmms], [1.2.12])
+AC_CONFIG_SRCDIR([xmms/main.c])
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.19.1])
+AC_CONFIG_MACRO_DIRS([m4])
 AC_CANONICAL_HOST
 
 cflags_set=${CFLAGS+set}
 AM_CONFIG_HEADER([config.h xmms/i18n.h])
 
-AM_INIT_AUTOMAKE([xmms], [1.2.12])
+AM_INIT_AUTOMAKE
 
 AC_ARG_ENABLE([one-plugin-dir],
 [  --enable-one-plugin-dir  use a single plugin dir [default=no]],,
@@ -48,8 +52,8 @@ dnl ***
 dnl *** Various compiler setup.
 dnl ***
 AC_PROG_CC
-AC_GNU_SOURCE
-AC_ISC_POSIX
+AC_USE_SYSTEM_EXTENSIONS
+AC_SEARCH_LIBS([strerror],[cposix])
 dnl AC_PROG_CXX
 AC_C_BIGENDIAN
 AC_C_INLINE
@@ -247,13 +251,9 @@ if test "x$enable_vorbis" = "xyes"; then
 	  LIBS_save=$LIBS
 	  CFLAGS="$CFLAGS $VORBIS_CFLAGS $OGG_CFLAGS"
 	  LIBS="$LIBS $VORBIS_LIBS $OGG_LIBS"
-	  AC_TRY_COMPILE(
-		[#include <vorbis/vorbisfile.h>],
-		[OggVorbis_File vf;
+	  AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <vorbis/vorbisfile.h>]], [[OggVorbis_File vf;
 		 float **pcm;
-		 ov_read_float(&vf, &pcm, 1024, 0);],
-		[AC_MSG_RESULT([yes])],
-		[AC_MSG_RESULT([no (need atleast 1.0)])
+		 ov_read_float(&vf, &pcm, 1024, 0);]])],[AC_MSG_RESULT([yes])],[AC_MSG_RESULT([no (need atleast 1.0)])
 		 have_vorbis=no])
 	  CFLAGS=$CFLAGS_save
 	  LIBS=$LIBS_save
@@ -279,15 +279,12 @@ LIBS_save=$LIBS
 CFLAGS="$CFLAGS $GTK_CFLAGS"
 LIBS="$LIBS $GTK_LIBS"
 AC_CACHE_CHECK([for thread-safe Xlib],[xmms_cv_lib_xlibs_threadsafe],
-[AC_TRY_RUN([
+[AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <X11/Xlib.h>
 int main()
 {
    exit(!(XInitThreads()));
-}],
-[xmms_cv_lib_xlibs_threadsafe=yes],
-[xmms_cv_lib_xlibs_threadsafe=no],
-[xmms_cv_lib_xlibs_threadsafe=yes])])
+}]])],[xmms_cv_lib_xlibs_threadsafe=yes],[xmms_cv_lib_xlibs_threadsafe=no],[xmms_cv_lib_xlibs_threadsafe=yes])])
 CFLAGS=$CFLAGS_save
 LIBS=$LIBS_save
 
@@ -297,8 +294,6 @@ dnl *** This is just a copy of po/LINGUAS and is here to avoid breaking
 dnl *** compatibility with automake 1.4
 dnl ***
 ALL_LINGUAS="af az be bg bs ca cs cy da de el en en_GB eo es et eu fi fr ga gl hr hu id it ja ka ko lt lv mk ms nn nl no pl pt pt_BR ro ru sk sl sq sr sr@Latn sv tg th tr uk uz vi wa zh_CN zh_TW"
-
-AM_GNU_GETTEXT
 
 localedir=${datadir}/locale
 AC_SUBST([localedir])
@@ -358,10 +353,9 @@ dnl ***
 dnl *** Check if we have socklen_t type
 dnl ***
 AC_CACHE_CHECK([for socklen_t], [xmms_cv_type_socklen_t],[
-	AC_TRY_COMPILE([
+	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 	#include <sys/types.h>
-	#include <sys/socket.h>],
-	[socklen_t s;],[xmms_cv_type_socklen_t=yes],[xmms_cv_type_socklen_t=no])
+	#include <sys/socket.h>]], [[socklen_t s;]])],[xmms_cv_type_socklen_t=yes],[xmms_cv_type_socklen_t=no])
 ])
 if test "x$xmms_cv_type_socklen_t" = "xno"; then
 	AC_DEFINE([socklen_t], [int], [Define to int if the socklen_t type is missing])
@@ -472,10 +466,7 @@ AC_CHECK_FUNCS([sched_get_priority_max])
 AC_CHECK_FUNCS([srandomdev])
 
 AC_CACHE_CHECK([for nl_langinfo(CODESET)], [xmms_cv_func_langinfo], [
-AC_TRY_COMPILE([#include <langinfo.h>],
-        [char *codeset = nl_langinfo (CODESET);],
-   [xmms_cv_func_langinfo=yes],
-   [xmms_cv_func_langinfo=no])])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <langinfo.h>]], [[char *codeset = nl_langinfo (CODESET);]])],[xmms_cv_func_langinfo=yes],[xmms_cv_func_langinfo=no])])
 if test "x$xmms_cv_func_langinfo" = "xyes"; then
   AC_DEFINE([HAVE_CODESET],,[Define if nl_langinfo(CODESET) is available.])
 fi
@@ -509,7 +500,7 @@ AC_CHECK_SIZEOF([long])
 
 if test -n "$GCC"
 then
-  CFLAGS="$CFLAGS -Wall -Wno-unused-result -Wpointer-arith -finline-functions"
+  CFLAGS="$CFLAGS -Wall -Wno-unused-result -Wpointer-arith -finline-functions -Wno-incompatible-pointer-types"
   case "$CFLAGS" in
     -g*) ;;
     *\ -g*) ;;
@@ -623,7 +614,7 @@ AC_CONFIG_SUBDIRS([libxmms])
 AC_SUBST([xmmsdir])
 AC_SUBST([plugindir])
 
-AC_OUTPUT([
+AC_CONFIG_FILES([
 Makefile
 xmms.1
 wmxmms.1
@@ -659,8 +650,9 @@ Visualization/sanalyzer/Makefile
 Visualization/opengl_spectrum/Makefile
 wmxmms/Makefile
 po/Makefile.in
-intl/Makefile],
-[chmod +x xmms-config])
+intl/Makefile])
+AC_CONFIG_COMMANDS([default],[chmod +x xmms-config],[])
+AC_OUTPUT
 
 echo ""
 echo "Configuration:"
