@@ -1,8 +1,12 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT([configfile.c])
+AC_INIT([libxmms], [$LIBXMMS_VERSION])
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.19.1])
+AC_CONFIG_MACRO_DIRS([m4])
+AC_CONFIG_SRCDIR([configfile.c])
 
-AM_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADERS([config.h])
 
 dnl libtool version:
 LIBXMMS_MAJOR_VERSION=4
@@ -10,7 +14,7 @@ LIBXMMS_MINOR_VERSION=1
 LIBXMMS_MICRO_VERSION=3
 LIBXMMS_VERSION=$LIBXMMS_MAJOR_VERSION.$LIBXMMS_MINOR_VERSION.$LIBXMMS_MICRO_VERSION
 
-AM_INIT_AUTOMAKE([libxmms], [$LIBXMMS_VERSION])
+AM_INIT_AUTOMAKE
 
 AC_SUBST([LIBXMMS_MAJOR_VERSION])
 AC_SUBST([LIBXMMS_MINOR_VERSION])
@@ -39,8 +43,6 @@ then
   CFLAGS="$CFLAGS -Wall -Werror -Wno-unused-result -Wpointer-arith"
 fi
 
-AC_HEADER_TIME
-
 AC_CHECK_HEADERS([sched.h])
 AC_CHECK_HEADERS([sys/sched.h])
 AC_CHECK_HEADERS([unistd.h])
@@ -49,15 +51,13 @@ AC_CHECK_HEADERS([sys/time.h])
 AM_ICONV
 
 AC_CACHE_CHECK([for nl_langinfo(CODESET)], [xmms_cv_func_langinfo], [
-AC_TRY_COMPILE([#include <langinfo.h>],
-        [char *codeset = nl_langinfo (CODESET);],
-   xmms_cv_func_langinfo=yes,
-   xmms_cv_func_langinfo=no)])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <langinfo.h>]], [[char *codeset = nl_langinfo (CODESET);]])],[xmms_cv_func_langinfo=yes],[xmms_cv_func_langinfo=no])])
 if test "x$xmms_cv_func_langinfo" = "xyes"; then
   AC_DEFINE([HAVE_CODESET],,[Define if nl_langinfo(CODESET) is available.])
 fi
 
 
-AC_OUTPUT([
+AC_CONFIG_FILES([
 Makefile
 ])
+AC_OUTPUT
