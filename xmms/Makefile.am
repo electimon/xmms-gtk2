@@ -56,8 +56,9 @@ xmms.h \
 getopt.c getopt1.c getopt.h \
 urldecode.c urldecode.h \
 dnd.h \
-mkdtemp.c
+mkdtemp.c \
+gtk.h
 
 EXTRA_DIST= xmms_logo.xpm xmms_mini.xpm xmms.desktop xmms.wmconfig
 
-xmmsinclude_HEADERS = plugin.h fullscreen.h
+xmmsinclude_HEADERS = plugin.h fullscreen.h gtk.h
