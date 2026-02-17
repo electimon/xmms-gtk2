@@ -603,7 +603,6 @@ xmms/Makefile
 xmms/defskin/Makefile
 Output/Makefile
 Output/OSS/Makefile
-Output/esd/Makefile
 Output/disk_writer/Makefile
 Output/solaris/Makefile
 Output/sun/Makefile
