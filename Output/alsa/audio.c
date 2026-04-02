@@ -800,11 +800,13 @@ static void alsa_write_out_thread_data(void)
 
 /* audio thread loop */
 /* FIXME: proper lock? */
+__attribute__((optimize("no-tree-vectorize")))
 static void *alsa_loop(void *arg)
 {
 	int npfds = snd_pcm_poll_descriptors_count(alsa_pcm);
 	struct pollfd *pfds;
 	unsigned short *revents;
+	int i;
 
 	if (npfds <= 0)
 		goto _error;
@@ -812,10 +814,7 @@ static void *alsa_loop(void *arg)
 	revents = alloca(sizeof(*revents) * npfds);
 	while (going && alsa_pcm)
 	{
-		if (get_thread_buffer_filled() > prebuffer_size)
-			prebuffer = FALSE;
-		if (!paused && !prebuffer &&
-		    get_thread_buffer_filled() > hw_period_size_in)
+		if (! paused && get_thread_buffer_filled() > hw_period_size_in)
 		{
 			snd_pcm_poll_descriptors(alsa_pcm, pfds, npfds);
 			if (poll(pfds, npfds, 10) > 0)
@@ -825,28 +824,24 @@ static void *alsa_loop(void *arg)
 				 * dmix returns a postive value even
 				 * if no data is available
 				 */
-				int i;
+				int should_write_data = 0;
 				snd_pcm_poll_descriptors_revents(alsa_pcm, pfds,
 								 npfds, revents);
 				for (i = 0; i < npfds; i++)
 					if (revents[i] & POLLOUT)
-					{
-						alsa_write_out_thread_data();
-						break;
-					}
+						should_write_data = 1;
+				if (should_write_data)
+					alsa_write_out_thread_data();
 			}
 		}
 		else
 			xmms_usleep(10000);
-
 		if (pause_request != paused)
 			alsa_do_pause(pause_request);
-
 		if (flush_request != -1)
 		{
 			alsa_do_flush(flush_request);
 			flush_request = -1;
-			prebuffer = TRUE;
 		}
 	}
 
